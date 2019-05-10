@@ -1,0 +1,48 @@
+{
+  "name": "gerar-boletos",
+  "version": "1.0.4",
+  "description": "Gerar boletos para vários bancos",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js"
+  },
+  "keywords": [
+    "gerador",
+    "boleto",
+    "boletos",
+    "bancario",
+    "banco",
+    "cecred",
+    "sicredi",
+    "ailos",
+    "viacredi",
+    "bradesco",
+    "brasil",
+    "itau",
+    "caixa",
+    "economica",
+    "federal",
+    "santander",
+    "sicoob"
+  ],
+  "author": {
+    "name": "Rômulo Cabral Santos",
+    "email": "romulosanttos1@gmail.com"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "pdfkit": "0.8.3"
+  },
+  "devDependencies": {
+    "nodeunit": "0.11.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Romulosanttos/gerar-boletos.git"
+  }
+}
