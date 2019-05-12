@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Gerar boletos para vários bancos",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js"
+    "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js",
+    "lint": "eslint ."
   },
   "keywords": [
     "gerador",
@@ -36,9 +37,11 @@
   },
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.24.0",
     "pdfkit": "0.8.3"
   },
   "devDependencies": {
+    "eslint": "^5.16.0",
     "nodeunit": "0.11.2"
   },
   "repository": {
