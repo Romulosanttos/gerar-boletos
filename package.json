@@ -10,7 +10,9 @@
   },
   "scripts": {
     "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js",
-    "lint": "eslint ."
+	  "lint": "eslint .",
+	  "gerarBradesco": "babel-node ./examples/gerar-boleto-bradesco.js",
+	  "gerarCecred": "babel-node ./examples/gerar-boleto-cecred.js"
   },
   "keywords": [
     "gerador",
@@ -41,6 +43,10 @@
     "pdfkit": "0.8.3"
   },
   "devDependencies": {
+	  "@babel/core": "^7.4.4",
+	  "@babel/node": "^7.2.2",
+	  "@babel/plugin-proposal-class-properties": "^7.4.4",
+	  "@babel/preset-env": "^7.4.4",
     "eslint": "^5.16.0",
     "nodeunit": "0.11.2"
   },
