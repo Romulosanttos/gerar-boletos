@@ -76,7 +76,7 @@ module.exports = {
 
 	'Verifica geração da linha digitável - 1': function(test) {
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = "34191.57213 89766.660164 74514.590004 6 56550000268016";
+			linhaEsperada = '34191.57213 89766.660164 74514.590004 6 56550000268016';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -93,7 +93,7 @@ module.exports = {
 		beneficiario.comAgencia('8462');
 		beneficiario.comCarteira('174');
 		beneficiario.comCodigoBeneficiario('05825');
-		beneficiario.comNossoNumero('00015135')
+		beneficiario.comNossoNumero('00015135');
 		beneficiario.comDigitoNossoNumero('6');
 
 		pagador = Pagador.novoPagador();
@@ -125,7 +125,7 @@ module.exports = {
 		beneficiario.comCarteira('181');
 		beneficiario.comAgencia('654');
 		beneficiario.comCodigoBeneficiario('8711'); //Não se deve indicar o dígito da agencia
-		beneficiario.comNossoNumero('94588021')
+		beneficiario.comNossoNumero('94588021');
 		beneficiario.comDigitoNossoNumero('4');
 
 		pagador = Pagador.novoPagador();
@@ -158,7 +158,7 @@ module.exports = {
 		beneficiario.comCarteira('157');
 		beneficiario.comAgencia('654');
 		beneficiario.comCodigoBeneficiario('8711'); //Não se deve indicar o dígito da agencia
-		beneficiario.comNossoNumero('89605074')
+		beneficiario.comNossoNumero('89605074');
 		beneficiario.comDigitoNossoNumero('2');
 
 		pagador = Pagador.novoPagador();
@@ -191,7 +191,7 @@ module.exports = {
 		beneficiario.comCarteira('157');
 		beneficiario.comAgencia('654');
 		beneficiario.comCodigoBeneficiario('8711'); //Não se deve indicar o dígito da agencia
-		beneficiario.comNossoNumero('02891620')
+		beneficiario.comNossoNumero('02891620');
 		beneficiario.comDigitoNossoNumero('8');
 
 		pagador = Pagador.novoPagador();
@@ -224,7 +224,7 @@ module.exports = {
 		beneficiario.comCarteira('157');
 		beneficiario.comAgencia('654');
 		beneficiario.comCodigoBeneficiario('8711'); //Não se deve indicar o dígito da agencia
-		beneficiario.comNossoNumero('07967777')
+		beneficiario.comNossoNumero('07967777');
 		beneficiario.comDigitoNossoNumero('4');
 
 		pagador = Pagador.novoPagador();
@@ -269,15 +269,15 @@ module.exports = {
 		test.done();
 	},
 
-    'Verifica que arquivo de imagem do logotipo existe': function(test) {
-        test.ok(fs.existsSync(banco.getImagem()));
-        test.done();
-    },
+	'Verifica que arquivo de imagem do logotipo existe': function(test){
+		test.ok(fs.existsSync(banco.getImagem()));
+		test.done();
+	},
 
-    'Exibir campo CIP retorna falso': function(test) {
-        test.equal(banco.exibirCampoCip(), false);
-        test.done();
-    },
+	'Exibir campo CIP retorna falso': function(test){
+		test.equal(banco.exibirCampoCip(), false);
+		test.done();
+	},
 
 	'Verifica criação de pdf': function(test) { //Mover para teste adequado
 		var datas2 = Datas.novasDatas();
@@ -291,7 +291,7 @@ module.exports = {
 		beneficiario2.comCarteira('157');
 		beneficiario2.comAgencia('654');
 		beneficiario2.comCodigoBeneficiario('8711'); //Não se deve indicar o dígito da conta
-		beneficiario2.comNossoNumero('07967777')
+		beneficiario2.comNossoNumero('07967777');
 		beneficiario2.comDigitoNossoNumero('4');
 
 		var pagador2 = Pagador.novoPagador();
@@ -345,4 +345,4 @@ module.exports = {
 			});
 		});
 	}
-}
+};
