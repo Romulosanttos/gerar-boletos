@@ -1,9 +1,9 @@
 import Gerador from '../index';
 
-export default function createBoleto(banco, pagador, boleto){
+export default function createBoleto(boleto_info){
+	const { banco, pagador, boleto, beneficiario } = boleto_info;
+	const { datas, valor, especieDocumento, numeroDocumento } = boleto;
 	const da = Gerador.boleto.Datas;
-	const { datas } = boleto;
-	const beneficiario = createBeneficiario();
 	const instrucoes = createInstrucoes();
 
 	return Gerador.boleto.Boleto.novoBoleto()
@@ -11,16 +11,16 @@ export default function createBoleto(banco, pagador, boleto){
 			.comVencimento(datas.vencimento)
 			.comProcessamento(datas.processamento)
 			.comDocumento(datas.documentos))
-		.comBeneficiario(beneficiario)
+		.comBeneficiario(createBeneficiario(beneficiario))
 		.comPagador(createPagador(pagador))
 		.comBanco(banco)
-		.comValorBoleto(boleto.valor) //Apenas duas casas decimais
-		.comNumeroDoDocumento(1001)
-		.comEspecieDocumento('DM') //Duplicata de Venda Mercantil
+		.comValorBoleto(parseFloat(valor).toFixed(2)) //Apenas duas casas decimais
+		.comNumeroDoDocumento(numeroDocumento)
+		.comEspecieDocumento(especieDocumento) //Duplicata de Venda Mercantil
 		.comInstrucoes(instrucoes);
 }
-
-function createPagador(pagador){
+  
+function createPagador(pagador)  {
 	const enderecoPagador = Gerador.boleto.Endereco.novoEndereco()
 		.comLogradouro('Rua Pedro Lessa, 15')
 		.comBairro('Centro')
@@ -33,28 +33,30 @@ function createPagador(pagador){
 		.comRegistroNacional(pagador.RegistroNacional)
 		.comEndereco(enderecoPagador);
 }
-
-function createBeneficiario(){
+  
+function createBeneficiario(beneficiario){
 	const enderecoBeneficiario = Gerador.boleto.Endereco.novoEndereco()
-		.comLogradouro('Av romualdo galvao, 359')
-		.comBairro('Tirol')
-		.comCidade('Natal')
-		.comUf('RN')
-		.comCep('59020660');
+		.comLogradouro('Rua Pedro Lessa, 16')
+		.comBairro('Centro')
+		.comCidade('Rio de Janeiro')
+		.comUf('RJ')
+		.comCep('20030-030');
+
+	const {dadosBancarios} = beneficiario;
 
 	return Gerador.boleto.Beneficiario.novoBeneficiario()
 		.comNome('Empresa Fictícia LTDA')
 		.comRegistroNacional('43576788000191')
-		.comCarteira('09')
-		.comAgencia('0101')
-		.comDigitoAgencia('5')
-		.comCodigoBeneficiario('0326446')
-		.comDigitoCodigoBeneficiario('0')
-		.comNossoNumero('00000000061') //11 -digitos // "00000005752"
-		.comDigitoNossoNumero('8') // 1 digito // 8
+		.comCarteira(dadosBancarios.carteira)
+		.comAgencia(dadosBancarios.agencia)
+		.comDigitoAgencia(dadosBancarios.agenciaDigito)
+		.comCodigoBeneficiario(dadosBancarios.conta)
+		.comDigitoCodigoBeneficiario(dadosBancarios.contaDigito)
+		.comNossoNumero(dadosBancarios.nossoNumero) //11 -digitos // "00000005752"
+		.comDigitoNossoNumero(dadosBancarios.nossoNumeroDigito) // 1 digito // 8
 		.comEndereco(enderecoBeneficiario);
 }
-
+  
 function createInstrucoes(){
 	const instrucoes = [];
 	instrucoes.push('Após o vencimento Mora dia R$ 1,59');
