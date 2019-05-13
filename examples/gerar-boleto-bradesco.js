@@ -10,11 +10,11 @@ const init = () => {
 		beneficiario: {
 			dadosBancarios:{
 				carteira: '09',
-				agencia: '18455',
-				agenciaDigito: '4',
-				conta: '1277165',
-				contaDigito: '1' ,
-				nossoNumero: '00000000061',
+				agencia: '0101',
+				agenciaDigito: '5',
+				conta: '03264467',
+				contaDigito: '0' ,
+				nossoNumero: '00115290000000004',
 				nossoNumeroDigito: '8'
 			}
 		},
