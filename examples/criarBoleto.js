@@ -1,6 +1,47 @@
-import Gerador from '../index';
 
-export default function createBoleto(boleto_info){
+import Gerador from 'gerar-boletos';
+import fs from 'fs';
+
+export default function gerarBoleto(boleto, stream = null){
+	const novoBoleto = buildBoleto(boleto);
+	
+	if(stream){
+		return new Promise(async(resolve, reject)=> {
+			stream.set('Content-type', 'application/pdf');
+			
+			new Gerador.boleto.Gerador(novoBoleto).gerarPDF({
+				creditos: '',
+				stream: stream
+			}, (err, pdf) => {
+				if (err) return reject(err);
+				pdf.end();
+				stream.on('response', () => {
+					resolve(pdf);
+				});
+			});
+		});
+	}else{
+		return new Promise((resolve, reject)=>{
+			const dir = './storage/boletos';
+			if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+			const writeStream = fs.createWriteStream(`${dir}/boleto.pdf`);
+
+			new Gerador.boleto.Gerador(novoBoleto).gerarPDF({
+				creditos: '',
+				stream: writeStream
+			}, async(err, pdf) => {
+				if (err) return reject(err);
+
+				await pdf.end();
+				await writeStream.on('finish', () => {
+					resolve(()=> true);
+				});
+			});
+		});
+	}
+}
+
+function buildBoleto(boleto_info){
 	const { banco, pagador, boleto, beneficiario } = boleto_info;
 	const { datas, valor, especieDocumento, numeroDocumento } = boleto;
 	const da = Gerador.boleto.Datas;
