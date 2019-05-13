@@ -43,7 +43,7 @@ function createBeneficiario(){
 		.comCep('59020660');
 
 	return Gerador.boleto.Beneficiario.novoBeneficiario()
-		.comNome('Ezydoo Pagamentos LTDA')
+		.comNome('Empresa Fictícia LTDA')
 		.comRegistroNacional('43576788000191')
 		.comCarteira('09')
 		.comAgencia('0101')
