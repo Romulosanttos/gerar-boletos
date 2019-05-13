@@ -5,7 +5,7 @@ import createBoleto from './criarBoleto';
 
 const init = () => {
 	const boleto = {
-		banco: new Gerador.boleto.bancos.BancoBrasil(),
+		banco: new Gerador.boleto.bancos.Bradesco(),
 		pagador: { RegistroNacional: '12345678' },
 		beneficiario: {
 			dadosBancarios:{
