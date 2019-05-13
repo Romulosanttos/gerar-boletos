@@ -39,9 +39,13 @@ const init = () => {
 	new Gerador.boleto.Gerador(novoBoleto).gerarPDF({
 		creditos: '',
 		stream: writeStream
-	}, (err) => {
+	}, (err, pdf) => {
 		// eslint-disable-next-line no-console
 		if (err) return console.error(err);
+		pdf.end();
+		writeStream.on('response', () => {
+			resolve(pdf);
+		});
 	});
 };
 
