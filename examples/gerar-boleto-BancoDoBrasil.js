@@ -1,5 +1,6 @@
 import Gerador from '../index';
-import gerarBoleto  from './criarBoleto';
+import { gerarPdf, gerarBoleto} from './index';
+import streamToPromise from '../lib/utils/util';
 
 const boleto = {
 	banco: new Gerador.boleto.bancos.BancoBrasil(),
@@ -27,8 +28,10 @@ const boleto = {
 	}
 };
 
-gerarBoleto(boleto).then((pdf)=>{
-	return pdf();
+const novoBoleto = gerarBoleto(boleto);
+gerarPdf(novoBoleto).then(async({stream})=>{
+	// ctx.res.set('Content-type', 'application/pdf');	
+	await streamToPromise(stream);
 }).catch((error)=>{
 	return error;
 });

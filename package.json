@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Gerar boletos para vários bancos",
   "main": "index.js",
   "directories": {
@@ -10,9 +10,10 @@
   },
   "scripts": {
     "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js",
-	  "lint": "eslint .",
-	  "gerarBradesco": "babel-node ./examples/gerar-boleto-bradesco.js",
-	  "gerarCecred": "babel-node ./examples/gerar-boleto-cecred.js"
+    "lint": "eslint .",
+    "gerarBradesco": "babel-node ./examples/gerar-boleto-bradesco.js",
+    "gerarCecred": "babel-node ./examples/gerar-boleto-cecred.js",
+    "gerarBrasil": "babel-node ./examples/gerar-boleto-BancoDoBrasil.js"
   },
   "keywords": [
     "gerador",
@@ -43,10 +44,10 @@
     "pdfkit": "0.8.3"
   },
   "devDependencies": {
-	  "@babel/core": "^7.4.4",
-	  "@babel/node": "^7.2.2",
-	  "@babel/plugin-proposal-class-properties": "^7.4.4",
-	  "@babel/preset-env": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "eslint": "^5.16.0",
     "nodeunit": "0.11.2"
   },

@@ -1,36 +1,39 @@
 import Gerador from '../index';
-import fs from 'fs';
-import createBoleto from './criarBoleto';
+import { gerarPdf, gerarBoleto} from './index';
+import streamToPromise from '../lib/utils/util';
 
 
-const init = () => {
-	const banco = new Gerador.boleto.bancos.Cecred();
-	const pagador = {
-		RegistroNacional: '12345678'
-	};
-	const boleto_info = {
-		valor: 100.00,
+const boleto = {
+	banco: new Gerador.boleto.bancos.Cecred(),
+	pagador: { RegistroNacional: '12345678' },
+	beneficiario: {
+		dadosBancarios:{
+			carteira: '09',
+			convenio: '123456',
+			agencia: '0101',
+			agenciaDigito: '5',
+			conta: '03264467',
+			contaDigito: '0' ,
+			nossoNumero: '00115290000000004',
+			nossoNumeroDigito: '8'
+		}
+	},
+	boleto: {
+		numeroDocumento: '1001',
+		especieDocumento: 'DM',
+		valor: 110.00,
 		datas: {
 			vencimento: '02-04-2020',
-			processamento: '02-04-2019',
+			processamento:  '02-04-2019',
 			documentos: '02-04-2019'
 		}
-	};
-	const boleto = createBoleto(banco, pagador, boleto_info);
-
-	const dir = './tmp/boletos';
-	if(!fs.existsSync(dir)) fs.mkdirSync(dir);
-	const writeStream = fs.createWriteStream(`${dir}/boleto-cecred.pdf`);
-
-
-	new Gerador.boleto.Gerador(boleto).gerarPDF({
-		creditos: '',
-		stream: writeStream
-	}, (err) => {
-		// eslint-disable-next-line no-console
-		if(err) return console.error(err);
-	});
+	}
 };
-
-
-init();
+	
+const novoBoleto = gerarBoleto(boleto);
+gerarPdf(novoBoleto).then(async({stream})=>{
+	// ctx.res.set('Content-type', 'application/pdf');	
+	await streamToPromise(stream);
+}).catch((error)=>{
+	return error;
+});

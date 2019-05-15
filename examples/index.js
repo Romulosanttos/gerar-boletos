@@ -1,47 +1,29 @@
 
-import Gerador from 'gerar-boletos';
+import Gerador from '../index';
 import fs from 'fs';
 
-export default function gerarBoleto(boleto, stream = null){
-	const novoBoleto = buildBoleto(boleto);
+export { gerarPdf, gerarBoleto };
+
+const gerarPdf = (boleto, stream = null)=>{
 	
-	if(stream){
-		return new Promise(async(resolve, reject)=> {
-			stream.set('Content-type', 'application/pdf');
-			
-			new Gerador.boleto.Gerador(novoBoleto).gerarPDF({
-				creditos: '',
-				stream: stream
-			}, (err, pdf) => {
-				if (err) return reject(err);
-				pdf.end();
-				stream.on('response', () => {
-					resolve(pdf);
-				});
-			});
-		});
-	}else{
-		return new Promise((resolve, reject)=>{
-			const dir = './storage/boletos';
-			if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-			const writeStream = fs.createWriteStream(`${dir}/boleto.pdf`);
-
-			new Gerador.boleto.Gerador(novoBoleto).gerarPDF({
-				creditos: '',
-				stream: writeStream
-			}, async(err, pdf) => {
-				if (err) return reject(err);
-
-				await pdf.end();
-				await writeStream.on('finish', () => {
-					resolve(()=> true);
-				});
-			});
-		});
+	if(!stream){
+		const dir = './tmp/boletos';
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+		stream = fs.createWriteStream(`${dir}/boleto.pdf`);
 	}
-}
 
-function buildBoleto(boleto_info){
+	return new Promise(async (resolve)=> {
+		return await new Gerador.boleto.Gerador(boleto).gerarPDF({
+			creditos: '',
+			stream: stream
+		}).then(()=>{
+			return resolve({boleto, stream});
+		});
+	});
+	
+};
+
+const gerarBoleto = (boleto_info)=>{
 	const { banco, pagador, boleto, beneficiario } = boleto_info;
 	const { datas, valor, especieDocumento, numeroDocumento } = boleto;
 	const da = Gerador.boleto.Datas;
@@ -59,9 +41,9 @@ function buildBoleto(boleto_info){
 		.comNumeroDoDocumento(numeroDocumento)
 		.comEspecieDocumento(especieDocumento) //Duplicata de Venda Mercantil
 		.comInstrucoes(instrucoes);
-}
+};
   
-function createPagador(pagador)  {
+const createPagador = (pagador)=>{
 	const enderecoPagador = Gerador.boleto.Endereco.novoEndereco()
 		.comLogradouro('Rua Pedro Lessa, 15')
 		.comBairro('Centro')
@@ -73,9 +55,9 @@ function createPagador(pagador)  {
 		.comNome('José Bonifácio de Andrada')
 		.comRegistroNacional(pagador.RegistroNacional)
 		.comEndereco(enderecoPagador);
-}
+};
   
-function createBeneficiario(beneficiario){
+const createBeneficiario = (beneficiario)=>{
 	const enderecoBeneficiario = Gerador.boleto.Endereco.novoEndereco()
 		.comLogradouro('Rua Pedro Lessa, 16')
 		.comBairro('Centro')
@@ -85,7 +67,7 @@ function createBeneficiario(beneficiario){
 
 	const {dadosBancarios} = beneficiario;
 
-	return Gerador.boleto.Beneficiario.novoBeneficiario()
+	let novoBeneficiario =  Gerador.boleto.Beneficiario.novoBeneficiario()
 		.comNome('Empresa Fictícia LTDA')
 		.comRegistroNacional('43576788000191')
 		.comCarteira(dadosBancarios.carteira)
@@ -96,11 +78,17 @@ function createBeneficiario(beneficiario){
 		.comNossoNumero(dadosBancarios.nossoNumero) //11 -digitos // "00000005752"
 		.comDigitoNossoNumero(dadosBancarios.nossoNumeroDigito) // 1 digito // 8
 		.comEndereco(enderecoBeneficiario);
-}
+
+	if(dadosBancarios.convenio){
+		novoBeneficiario.comNumeroConvenio(dadosBancarios.convenio);
+	}
+
+	return novoBeneficiario;
+};
   
-function createInstrucoes(){
+const createInstrucoes = ()=>{
 	const instrucoes = [];
 	instrucoes.push('Após o vencimento Mora dia R$ 1,59');
 	instrucoes.push('Após o vencimento, multa de 2%');
 	return instrucoes;
-}
+};
