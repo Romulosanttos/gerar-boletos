@@ -36,7 +36,8 @@
   ],
   "author": {
     "name": "Rômulo Cabral Santos",
-    "email": "romulosanttos1@gmail.com"
+    "email": "romulosanttos1@gmail.com",
+  	"homepage": "https://romulosanttos.github.io/"
   },
   "license": "ISC",
   "dependencies": {
