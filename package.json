@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Gerar boletos para vários bancos",
   "main": "index.js",
   "directories": {
@@ -40,6 +40,9 @@
   	"homepage": "https://romulosanttos.github.io/"
   },
   "license": "ISC",
+  "engines": {
+      "node": ">=10.0.0"
+  },
   "dependencies": {
     "moment": "^2.24.0",
     "pdfkit": "0.8.3"
