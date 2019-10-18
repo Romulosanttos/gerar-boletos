@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Gerar boletos para vários bancos",
   "main": "index.js",
   "directories": {
@@ -44,6 +44,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "base64-stream": "^1.0.0",
     "moment": "^2.24.0",
     "pdfkit": "0.8.3"
   },
