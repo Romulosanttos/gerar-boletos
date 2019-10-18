@@ -46,15 +46,15 @@
   "dependencies": {
     "base64-stream": "^1.0.0",
     "moment": "^2.24.0",
-    "pdfkit": "0.8.3"
+    "pdfkit": "0.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/node": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "eslint": "^5.16.0",
-    "nodeunit": "0.11.2"
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.3",
+    "eslint": "^6.5.1",
+    "nodeunit": "0.11.3"
   },
   "repository": {
     "type": "git",
