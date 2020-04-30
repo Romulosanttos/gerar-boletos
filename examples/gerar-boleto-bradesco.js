@@ -1,7 +1,6 @@
-import Gerador from '../index';
-import { gerarPdf, gerarBoleto} from './index';
-import streamToPromise from '../lib/utils/util';
-
+const Gerador = require('../index');
+const { gerarPdf, gerarBoleto} = require('./index');
+const streamToPromise = require('../lib/utils/util');
 
 const boleto = {
 	banco: new Gerador.boleto.bancos.Bradesco(),

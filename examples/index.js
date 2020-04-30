@@ -1,8 +1,6 @@
 
-import Gerador from '../index';
-import fs from 'fs';
-
-export { gerarPdf, gerarBoleto };
+const Gerador = require('../index');
+const fs = require('fs');
 
 const gerarPdf = (boleto, stream = null)=>{
 	
@@ -92,3 +90,5 @@ const createInstrucoes = ()=>{
 	instrucoes.push('Após o vencimento, multa de 2%');
 	return instrucoes;
 };
+
+module.exports = { gerarPdf, gerarBoleto };
