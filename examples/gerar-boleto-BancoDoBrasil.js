@@ -1,10 +1,11 @@
 const Gerador = require('../index');
-const { gerarPdf, gerarBoleto} = require('./index');
+const Boletos  = require('../lib/index');
 const streamToPromise = require('../lib/utils/util');
 
 const boleto = {
 	banco: new Gerador.boleto.bancos.BancoBrasil(),
 	pagador: { RegistroNacional: '12345678' },
+	instrucoes: ['Após o vencimento Mora dia R$ 1,59','Após o vencimento, multa de 2%'],
 	beneficiario: {
 		dadosBancarios:{
 			carteira: '09',
@@ -28,8 +29,10 @@ const boleto = {
 	}
 };
 
-const novoBoleto = gerarBoleto(boleto);
-gerarPdf(novoBoleto).then(async({stream})=>{
+const novoBoleto = new Boletos(boleto);
+novoBoleto.gerarBoleto();
+
+novoBoleto.pdfFile().then(async({stream})=>{
 	// ctx.res.set('Content-type', 'application/pdf');	
 	await streamToPromise(stream);
 }).catch((error)=>{
