@@ -1,9 +1,8 @@
-const Gerador = require('../index');
-const Boletos = require('../lib/index');
+const { Bancos, Boletos } = require('../lib/index');
 const streamToPromise = require('../lib/utils/util');
 
 const boleto = {
-  banco: new Gerador.boleto.bancos.BancoBrasil(),
+  banco: Bancos.bancoDoBrasil(),
   pagador: {
     nome: 'José Bonifácio de Andrada',
     registroNacional: '12345678',
