@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "1.3.3",
+  "version": "1.4.3",
   "description": "Gerar boletos para vários bancos",
   "main": "index.js",
   "directories": {
