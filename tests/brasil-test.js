@@ -46,7 +46,7 @@ module.exports = {
 					//console.log(match[1] + " / " + file);
 
 					for(var property in submodule){
-						if(submodule.hasOwnProperty(property)){
+						if(Object.prototype.isPrototypeOf.call(submodule,property)){
 							var temTeste = property in submoduleTest;
 
 							if(!temTeste) {

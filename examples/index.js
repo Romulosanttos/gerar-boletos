@@ -10,8 +10,8 @@ const gerarPdf = (boleto, stream = null)=>{
 		stream = fs.createWriteStream(`${dir}/boleto.pdf`);
 	}
 
-	return new Promise(async (resolve)=> {
-		return await new Gerador.boleto.Gerador(boleto).gerarPDF({
+	return new Promise((resolve)=> {
+		return new Gerador.boleto.Gerador(boleto).gerarPDF({
 			creditos: '',
 			stream: stream
 		}).then(()=>{
