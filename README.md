@@ -24,6 +24,9 @@ Geração de boletos para bancos:
 ```javascript
 npm i gerar-boletos
 ```
+```javascript
+yarn add gerar-boletos
+```
 ### Exemplos de uso
 
 * [aqui](/examples)
