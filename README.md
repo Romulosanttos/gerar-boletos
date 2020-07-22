@@ -29,7 +29,17 @@ yarn add gerar-boletos
 ```
 ### Exemplos de uso
 
-* [aqui](/examples)
+```javascript
+npm run gerarBrasil
+```
+```javascript
+npm run gerarBradesco
+```
+```javascript
+npm run gerarCecred
+```
+
+* [pasta com arquivos de exemplo](/examples)
 
 ### Run tests
 
