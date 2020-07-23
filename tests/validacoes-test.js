@@ -1,4 +1,4 @@
-const validacoes = require('../index').validacoes;
+const {Validacoes:validacoes} = require('../lib/index');
 
 module.exports = {
 

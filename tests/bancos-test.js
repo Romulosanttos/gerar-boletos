@@ -1,4 +1,4 @@
-const bancos = require('../index').bancos;
+const bancos = require('../lib/utils/functions/bancosUtils');
 
 module.exports = {
 	itau: {

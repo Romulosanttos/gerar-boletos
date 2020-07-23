@@ -1,4 +1,4 @@
-const formatacoes = require('../index').formatacoes;
+const { formatacoes } = require('../lib/index');
 
 module.exports = {
 
