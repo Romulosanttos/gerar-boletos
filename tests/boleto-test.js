@@ -1,4 +1,3 @@
-// const boleto = require('../index').boleto;
 const boleto = require('../lib/utils/functions/boletoUtils');
 const bancos = boleto.bancos;
 const Endereco = boleto.Endereco;
