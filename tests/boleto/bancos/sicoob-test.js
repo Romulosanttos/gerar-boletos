@@ -1,15 +1,16 @@
+const PdfGerador = require('../../../lib/pdf-gerador');
 var path = require('path'),
 	fs = require('fs'),
-	boleto = require('../../../lib/boletoUtils.js'),
+	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Sicoob = require('../../../lib/boleto/bancos/sicoob.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
 	GeradorDeBoleto = require('../../../lib/boleto/gerador-de-boleto.js'),
 
-	Datas = boleto.Datas,
-	Endereco = boleto.Endereco,
-	Beneficiario = boleto.Beneficiario,
-	Pagador = boleto.Pagador,
-	Boleto = boleto.Boleto,
+	Datas = boletos.Datas,
+	Endereco = boletos.Endereco,
+	Beneficiario = boletos.Beneficiario,
+	Pagador = boletos.Pagador,
+	Boleto = boletos.Boleto,
 
 	banco,
 	boleto,
@@ -18,11 +19,11 @@ var path = require('path'),
 module.exports = {
 	setUp: function(done) {
 		var datas = Datas.novasDatas();
-		datas.comDocumento(1, 2, 2016);
-		datas.comProcessamento(1, 2, 2016);
-		datas.comVencimento(10, 2, 2016);
+		datas.comDocumento('02-01-2016');
+		datas.comProcessamento('02-01-2016');
+		datas.comVencimento('02-10-2016');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 		pagador.comNome('BASILIO ANTONIO CAMPANHOLO');
 		pagador.comRegistroNacional('26018683172');
 
@@ -282,9 +283,9 @@ module.exports = {
 	'Verifica criação de pdf': function(test) { //Mover para teste adequado
 
 		var datas2 = Datas.novasDatas();
-		datas2.comDocumento(19, 9, 2014);
-		datas2.comProcessamento(19, 9, 2014);
-		datas2.comVencimento(26, 9, 2014);
+		datas2.comDocumento('09-19-2014');
+		datas2.comProcessamento('09-19-2014');
+		datas2.comVencimento('09-26-2014');
 
 		var beneficiario2 = Beneficiario.novoBeneficiario();
 		beneficiario2.comNome('GREENSTONE DES. E PROC. DE DADOS MINERAIS LTDA ME');
@@ -315,7 +316,7 @@ module.exports = {
 		enderecoDoPagador.comCidade('Rio de Janeiro');
 		enderecoDoPagador.comUf('RJ');
 
-		pagador.comEndereco(enderecoDoPagador);
+		pagador2.comEndereco(enderecoDoPagador);
 
 		boleto.comLocaisDePagamento([
 			'Pagável em qualquer banco ou casa lotérica até o vencimento'
@@ -329,20 +330,12 @@ module.exports = {
 			'Agradecemos a preferência, volte sempre!'
 		]);
 
-		var geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
-
-		geradorDeBoleto.gerarPDF(function boletosGerados(err, pdf) {
-			test.ifError(err);
-
-			var caminhoDoArquivo = path.join(__dirname, '/boleto.pdf');
-			writeStream = fs.createWriteStream(caminhoDoArquivo);
-
-			pdf.pipe(writeStream);
-
-			writeStream.on('close', function() {
-				test.ok(fs.existsSync(caminhoDoArquivo));
-				test.done();
-			});
+		new PdfGerador([boleto, boleto2]).pdfFile(
+			'../tests/boleto/bancos/boleto-sicoob.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
+			test.done();
 		});
 	}
 };

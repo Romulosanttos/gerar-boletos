@@ -1,9 +1,8 @@
-var path = require('path'),
-	fs = require('fs'),
+const PdfGerador = require('../../../lib/pdf-gerador');
+var fs = require('fs'),
 	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Bradesco = require('../../../lib/boleto/bancos/bradesco.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-	GeradorDeBoleto = require('../../../lib/boleto/gerador-de-boleto.js'),
 
 	Datas = boletos.Datas,
 	Endereco = boletos.Endereco,
@@ -135,17 +134,12 @@ module.exports = {
 	},
 
 	'Verifica criação de pdf': function(test) {
-		var geradorDeBoleto = new GeradorDeBoleto(boleto);
-		var caminhoDoArquivo = path.join(__dirname, '/boleto-bradesco.pdf');
-		const writeStream = fs.createWriteStream(caminhoDoArquivo);
-		geradorDeBoleto.gerarPDF({
-			creditos: '',
-			writeStream,
-		}).then(async()=>{
-			test.ok(fs.existsSync(caminhoDoArquivo));
-			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+		new PdfGerador(boleto).pdfFile(
+			'../tests/boleto/bancos/boleto-bradesco.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
 			test.done();
 		});
-
 	}
 };

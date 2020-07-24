@@ -1,10 +1,8 @@
-const { StreamToPromise } = require('../../../lib/index');
-var path = require('path'),
-	fs = require('fs'),
+const PdfGerador = require('../../../lib/pdf-gerador');
+var fs = require('fs'),
 	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Caixa = require('../../../lib/boleto/bancos/caixa.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-	GeradorDeBoleto = boletos.Gerador,
 
 	Datas = boletos.Datas,
 	Endereco = boletos.Endereco,
@@ -22,13 +20,13 @@ module.exports = {
 		banco = new Caixa();
 
 		// SINCO
-		// var datas = Datas.novasDatas();
-		// datas.comDocumento(22, 4, 2013);
-		// datas.comProcessamento(22, 4, 2013);
-		// datas.comVencimento(29, 4, 2013);
+		var datas = Datas.novasDatas();
+		datas.comDocumento('04-22-2013');
+		datas.comProcessamento('04-22-2013');
+		datas.comVencimento('04-29-2013');
 
-		// pagador = Pagador.novoPagador();
-		// pagador.comNome('Mario Amaral');
+		const pagador = Pagador.novoPagador();
+		pagador.comNome('Mario Amaral');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comNome('Rodrigo Turini');
@@ -39,13 +37,13 @@ module.exports = {
 		beneficiario.comNossoNumero('990000000003994458');
 		beneficiario.comDigitoNossoNumero('0');
 
-		// boletoSinco = Boleto.novoBoleto();
-		// boletoSinco.comDatas(datas);
-		// boletoSinco.comBeneficiario(beneficiario);
-		// boletoSinco.comBanco(banco);
-		// boletoSinco.comPagador(pagador);
-		// boletoSinco.comValorBoleto(4016.10);
-		// boletoSinco.comNumeroDoDocumento(3084373);
+		boletoSinco = Boleto.novoBoleto();
+		boletoSinco.comDatas(datas);
+		boletoSinco.comBeneficiario(beneficiario);
+		boletoSinco.comBanco(banco);
+		boletoSinco.comPagador(pagador);
+		boletoSinco.comValorBoleto(4016.10);
+		boletoSinco.comNumeroDoDocumento(3084373);
 
 		// SIGCB
 		var datas2 = Datas.novasDatas();
@@ -177,20 +175,20 @@ module.exports = {
 		enderecoDoPagador.comUf('RJ');
 		pagador2.comEndereco(enderecoDoPagador);
 
-		var boletoSicgb = Boleto.novoBoleto();
-		boletoSicgb.comDatas(datas2);
-		boletoSicgb.comBeneficiario(beneficiario2);
-		boletoSicgb.comBanco(banco);
-		boletoSicgb.comPagador(pagador2);
-		boletoSicgb.comValorBoleto(158.76);
-		boletoSicgb.comNumeroDoDocumento('NF100/00000215');
-		boletoSicgb.comLocaisDePagamento([
+		boletoSinco = Boleto.novoBoleto();
+		boletoSinco.comDatas(datas2);
+		boletoSinco.comBeneficiario(beneficiario2);
+		boletoSinco.comBanco(banco);
+		boletoSinco.comPagador(pagador2);
+		boletoSinco.comValorBoleto(158.76);
+		boletoSinco.comNumeroDoDocumento('NF100/00000215');
+		boletoSinco.comLocaisDePagamento([
 			'PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE'
 		]);
 
-		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSicgb),
+		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSinco),
 			linhaEsperada = '10496.48999 58000.100048 00000.000711 7 81550000015876';
-
+		console.log(geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
 	},
@@ -409,30 +407,21 @@ module.exports = {
 	},
 
 	'Verifica criação de pdf - SIGCB 1': function(test) {
-		var geradorDeBoleto = new GeradorDeBoleto(boletoSicgb);
-		var caminhoDoArquivo = path.join(__dirname, '/boleto-caixa.pdf');
-		const writeStream = fs.createWriteStream(caminhoDoArquivo);
-		geradorDeBoleto.gerarPDF({
-			creditos: '',
-			writeStream,
-		}).then(async()=>{
-			test.ok(fs.existsSync(caminhoDoArquivo));
-			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+		new PdfGerador(boletoSicgb).pdfFile(
+			'../tests/boleto/bancos/boleto-caixa1.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
 			test.done();
 		});
 	},
 
 	'Verifica criação de pdf - SIGCB 2': async function(test) {
-		var geradorDeBoleto = new GeradorDeBoleto(boletoSicgb);
-		var caminhoDoArquivo = path.join(__dirname, '/boleto-caixa2.pdf');
-		const writeStream = fs.createWriteStream(caminhoDoArquivo);
-		
-		await geradorDeBoleto.gerarPDF({
-			creditos: '',
-			writeStream,
-		}).then(async()=>{
-			test.ok(fs.existsSync(caminhoDoArquivo));
-			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+		new PdfGerador(boletoSicgb).pdfFile(
+			'../tests/boleto/bancos/boleto-caixa2.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
 			test.done();
 		});
 	}

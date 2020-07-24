@@ -1,3 +1,4 @@
+const PdfGerador = require('../../../lib/pdf-gerador');
 var path = require('path'),
 	fs = require('fs'),
 	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
@@ -329,16 +330,12 @@ module.exports = {
 			'Agradecemos a preferência, volte sempre!'
 		]);
 
-		const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
-
-		const caminhoDoArquivo = path.join(__dirname, '/boleto-itau.pdf');
-		const writeStream = fs.createWriteStream(caminhoDoArquivo);
-		geradorDeBoleto.gerarPDF({
-			creditos: '',
-			writeStream,
-		}).then(async()=>{
-			test.ok(fs.existsSync(caminhoDoArquivo));
-			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+		// const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
+		new PdfGerador([boleto, boleto2]).pdfFile(
+			'../tests/boleto/bancos/boleto-itau.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
 			test.done();
 		});
 	}
