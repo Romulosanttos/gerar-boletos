@@ -1,15 +1,16 @@
+const { StreamToPromise } = require('../../../lib/index');
 var path = require('path'),
 	fs = require('fs'),
-	boleto = require('../../../lib/boletoUtils.js'),
+	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Caixa = require('../../../lib/boleto/bancos/caixa.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-	GeradorDeBoleto = require('../../../lib/boleto/gerador-de-boleto.js'),
+	GeradorDeBoleto = boletos.Gerador,
 
-	Datas = boleto.Datas,
-	Endereco = boleto.Endereco,
-	Beneficiario = boleto.Beneficiario,
-	Pagador = boleto.Pagador,
-	Boleto = boleto.Boleto,
+	Datas = boletos.Datas,
+	Endereco = boletos.Endereco,
+	Beneficiario = boletos.Beneficiario,
+	Pagador = boletos.Pagador,
+	Boleto = boletos.Boleto,
 
 	banco,
 	boletoSinco,
@@ -48,9 +49,9 @@ module.exports = {
 
 		// SIGCB
 		var datas2 = Datas.novasDatas();
-		datas2.comDocumento(21, 8, 2012);
-		datas2.comProcessamento(21, 8, 2012);
-		datas2.comVencimento(4, 9, 2012);
+		datas2.comDocumento('02-04-2020');
+		datas2.comProcessamento('02-04-2020');
+		datas2.comVencimento('02-04-2020');
 
 		var beneficiario2 = Beneficiario.novoBeneficiario();
 		beneficiario2.comNome('Gammasoft Desenvolvimento de Software Ltda');
@@ -142,9 +143,9 @@ module.exports = {
 
 	'Linha digitavel com carteira SIGCB 1': function(test) {
 		var datas2 = Datas.novasDatas();
-		datas2.comDocumento(30, 11, 2015);
-		datas2.comProcessamento(30, 11, 2015);
-		datas2.comVencimento(30, 12, 2015);
+		datas2.comDocumento('02-04-2020');
+		datas2.comProcessamento('02-04-2020');
+		datas2.comVencimento('02-04-2020');
 
 		var beneficiario2 = Beneficiario.novoBeneficiario();
 		beneficiario2.comNome('AGUINALDO LUIZ TELES - ME');
@@ -188,7 +189,7 @@ module.exports = {
 		]);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSicgb),
-			linhaEsperada = '10496.48999 58000.100048 00000.000711 6 66580000015876'; // Certo
+			linhaEsperada = '10496.48999 58000.100048 00000.000711 7 81550000015876';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -196,7 +197,7 @@ module.exports = {
 
 	'Linha digitavel com carteira SIGCB 2': function(test) {
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSicgb),
-			linhaEsperada = '10492.90271 45900.200044 00000.013227 9 54460000008000';
+			linhaEsperada = '10492.90271 45900.200044 00000.013227 5 81550000008000';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -407,21 +408,32 @@ module.exports = {
 		test.done();
 	},
 
-	'Verifica criação de pdf': function(test) {
+	'Verifica criação de pdf - SIGCB 1': function(test) {
 		var geradorDeBoleto = new GeradorDeBoleto(boletoSicgb);
+		var caminhoDoArquivo = path.join(__dirname, '/boleto-caixa.pdf');
+		const writeStream = fs.createWriteStream(caminhoDoArquivo);
+		geradorDeBoleto.gerarPDF({
+			creditos: '',
+			writeStream,
+		}).then(async()=>{
+			test.ok(fs.existsSync(caminhoDoArquivo));
+			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+			test.done();
+		});
+	},
 
-		geradorDeBoleto.gerarPDF(function boletosGerados(err, pdf) {
-			test.ifError(err);
-
-			var caminhoDoArquivo = path.join(__dirname, '/boleto-caixa.pdf');
-			writeStream = fs.createWriteStream(caminhoDoArquivo);
-
-			pdf.pipe(writeStream);
-
-			writeStream.on('close', function() {
-				test.ok(fs.existsSync(caminhoDoArquivo));
-				test.done();
-			});
+	'Verifica criação de pdf - SIGCB 2': async function(test) {
+		var geradorDeBoleto = new GeradorDeBoleto(boletoSicgb);
+		var caminhoDoArquivo = path.join(__dirname, '/boleto-caixa2.pdf');
+		const writeStream = fs.createWriteStream(caminhoDoArquivo);
+		
+		await geradorDeBoleto.gerarPDF({
+			creditos: '',
+			writeStream,
+		}).then(async()=>{
+			test.ok(fs.existsSync(caminhoDoArquivo));
+			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+			test.done();
 		});
 	}
 };

@@ -1,15 +1,15 @@
 var path = require('path'),
 	fs = require('fs'),
-	boleto = require('../../../lib/boletoUtils.js'),
+	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Bradesco = require('../../../lib/boleto/bancos/bradesco.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
 	GeradorDeBoleto = require('../../../lib/boleto/gerador-de-boleto.js'),
 
-	Datas = boleto.Datas,
-	Endereco = boleto.Endereco,
-	Beneficiario = boleto.Beneficiario,
-	Pagador = boleto.Pagador,
-	Boleto = boleto.Boleto,
+	Datas = boletos.Datas,
+	Endereco = boletos.Endereco,
+	Beneficiario = boletos.Beneficiario,
+	Pagador = boletos.Pagador,
+	Boleto = boletos.Boleto,
 
 	banco,
 	boleto;
@@ -19,9 +19,10 @@ module.exports = {
 		banco = new Bradesco();
 
 		var datas = Datas.novasDatas();
-		datas.comDocumento(31, 5, 2006);
-		datas.comProcessamento(31, 5, 2006);
-		datas.comVencimento(10, 6, 2006);
+		
+		datas.comDocumento('02-04-2020');
+		datas.comProcessamento('02-04-2020');
+		datas.comVencimento('02-04-2020');
 
 		var beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comNome('Leonardo Bessa');
@@ -95,7 +96,7 @@ module.exports = {
 
 	'Testa geração de linha digitavel': function(test) {
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '23792.94909 60000.000004 03000.658009 6 31680000000100';
+			linhaEsperada = '23792.94909 60000.000004 03000.658009 9 81550000000100';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -104,7 +105,7 @@ module.exports = {
 	'Testa código de barras': function(test) {
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
 
-		test.equal('23796316800000001002949060000000000300065800', codigoDeBarras);
+		test.equal('23799815500000001002949060000000000300065800', codigoDeBarras);
 		test.done();
 	},
 
@@ -135,19 +136,16 @@ module.exports = {
 
 	'Verifica criação de pdf': function(test) {
 		var geradorDeBoleto = new GeradorDeBoleto(boleto);
-
-		geradorDeBoleto.gerarPDF(function boletosGerados(err, pdf) {
-			test.ifError(err);
-
-			var caminhoDoArquivo = path.join(__dirname, '/boleto-bradesco.pdf');
-			writeStream = fs.createWriteStream(caminhoDoArquivo);
-
-			pdf.pipe(writeStream);
-
-			writeStream.on('close', function() {
-				test.ok(fs.existsSync(caminhoDoArquivo));
-				test.done();
-			});
+		var caminhoDoArquivo = path.join(__dirname, '/boleto-bradesco.pdf');
+		const writeStream = fs.createWriteStream(caminhoDoArquivo);
+		geradorDeBoleto.gerarPDF({
+			creditos: '',
+			writeStream,
+		}).then(async()=>{
+			test.ok(fs.existsSync(caminhoDoArquivo));
+			test.equal(fs.unlinkSync(caminhoDoArquivo), undefined);
+			test.done();
 		});
+
 	}
 };
