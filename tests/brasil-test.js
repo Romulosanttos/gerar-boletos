@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const utils = require('../index');
+const utils = require('../lib/index');
 
 var existsSync = (process.version.indexOf('v0.6') !== -1 ? require('path').existsSync : existsSync = fs.existsSync);
 

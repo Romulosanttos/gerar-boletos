@@ -1,4 +1,4 @@
-const boleto = require('../index').boleto;
+const boleto = require('../lib/utils/functions/boletoUtils');
 const bancos = boleto.bancos;
 const Endereco = boleto.Endereco;
 const Gerador = boleto.Gerador;
@@ -29,8 +29,8 @@ module.exports = {
 
 			test.ok(new bancos.Cecred());
 			test.ok(new bancos['085']());
-
-			test.equals(10, Object.keys(bancos).length);
+			console.log(Object.keys(bancos).length);
+			test.equals(16, Object.keys(bancos).length);
 			test.done();
 		},
 	},

@@ -1,15 +1,16 @@
+const PdfGerador = require('../../../lib/pdf-gerador');
 var path = require('path'),
 	fs = require('fs'),
-	boleto = require('../../../lib/boletoUtils.js'),
+	boletos = require('../../../lib/utils/functions/boletoUtils.js'),
 	Itau = require('../../../lib/boleto/bancos/itau.js'),
 	geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
 	GeradorDeBoleto = require('../../../lib/boleto/gerador-de-boleto.js'),
 
-	Datas = boleto.Datas,
-	Endereco = boleto.Endereco,
-	Beneficiario = boleto.Beneficiario,
-	Pagador = boleto.Pagador,
-	Boleto = boleto.Boleto,
+	Datas = boletos.Datas,
+	Endereco = boletos.Endereco,
+	Beneficiario = boletos.Beneficiario,
+	Pagador = boletos.Pagador,
+	Boleto = boletos.Boleto,
 
 	banco,
 	boleto,
@@ -17,12 +18,12 @@ var path = require('path'),
 
 module.exports = {
 	setUp: function(done) {
-		var datas = Datas.novasDatas();
-		datas.comDocumento(20, 3, 2013);
-		datas.comProcessamento(20, 3, 2013);
-		datas.comVencimento(1, 4, 2013);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('03-20-2013');
+		datas.comProcessamento('03-20-2013');
+		datas.comVencimento('04-01-2013');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 		pagador.comNome('Fulano de Tal da Silva');
 		pagador.comRegistroNacional('00132781000178');
 
@@ -83,10 +84,10 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 2': function(test) {
-		datas = Datas.novasDatas();
-		datas.comDocumento(20, 03, 2014);
-		datas.comProcessamento(20, 03, 2014);
-		datas.comVencimento(10, 04, 2014);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('03-20-2014');
+		datas.comProcessamento('03-20-2014');
+		datas.comVencimento('04-10-2014');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comNome('Mario Amaral');
@@ -96,16 +97,16 @@ module.exports = {
 		beneficiario.comNossoNumero('00015135');
 		beneficiario.comDigitoNossoNumero('6');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 		pagador.comNome('Rodrigo de Sousa');
 
-	    boleto = Boleto.novoBoleto();
-	    boleto.comDatas(datas);
-	    boleto.comBeneficiario(beneficiario);
-	    boleto.comBanco(banco);
-	    boleto.comPagador(pagador);
-	    boleto.comValorBoleto(2680.16);
-	    boleto.comNumeroDoDocumento('575');
+		boleto = Boleto.novoBoleto();
+		boleto.comDatas(datas);
+		boleto.comBeneficiario(beneficiario);
+		boleto.comBanco(banco);
+		boleto.comPagador(pagador);
+		boleto.comValorBoleto(2680.16);
+		boleto.comNumeroDoDocumento('575');
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
@@ -116,10 +117,10 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 3': function(test) {
-		datas = Datas.novasDatas();
-		datas.comDocumento(21, 5, 2014);
-		datas.comProcessamento(21, 5, 2014);
-		datas.comVencimento(21, 5, 2014);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('05-21-2014');
+		datas.comProcessamento('05-21-2014');
+		datas.comVencimento('05-21-2014');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comCarteira('181');
@@ -128,16 +129,16 @@ module.exports = {
 		beneficiario.comNossoNumero('94588021');
 		beneficiario.comDigitoNossoNumero('4');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 
-	    boleto = Boleto.novoBoleto();
-	    boleto.comEspecieDocumento('DSI');
-	    boleto.comDatas(datas);
-	    boleto.comBeneficiario(beneficiario);
-	    boleto.comBanco(banco);
-	    boleto.comPagador(pagador);
-	    boleto.comValorBoleto(575);
-	    boleto.comNumeroDoDocumento('1');
+		boleto = Boleto.novoBoleto();
+		boleto.comEspecieDocumento('DSI');
+		boleto.comDatas(datas);
+		boleto.comBeneficiario(beneficiario);
+		boleto.comBanco(banco);
+		boleto.comPagador(pagador);
+		boleto.comValorBoleto(575);
+		boleto.comNumeroDoDocumento('1');
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
@@ -149,10 +150,10 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 4': function(test) {
-		datas = Datas.novasDatas();
-		datas.comDocumento(29, 5, 2014);
-		datas.comProcessamento(29, 5, 2014);
-		datas.comVencimento(23, 6, 2014);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('05-29-2014');
+		datas.comProcessamento('05-29-2014');
+		datas.comVencimento('06-23-2014');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comCarteira('157');
@@ -161,16 +162,16 @@ module.exports = {
 		beneficiario.comNossoNumero('89605074');
 		beneficiario.comDigitoNossoNumero('2');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 
-	    boleto = Boleto.novoBoleto();
-	    boleto.comEspecieDocumento('DSI');
-	    boleto.comDatas(datas);
-	    boleto.comBeneficiario(beneficiario);
-	    boleto.comBanco(banco);
-	    boleto.comPagador(pagador);
-	    boleto.comValorBoleto(115.38);
-	    boleto.comNumeroDoDocumento('2');
+		boleto = Boleto.novoBoleto();
+		boleto.comEspecieDocumento('DSI');
+		boleto.comDatas(datas);
+		boleto.comBeneficiario(beneficiario);
+		boleto.comBanco(banco);
+		boleto.comPagador(pagador);
+		boleto.comValorBoleto(115.38);
+		boleto.comNumeroDoDocumento('2');
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
@@ -182,10 +183,10 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 5': function(test) {
-		datas = Datas.novasDatas();
-		datas.comDocumento(20, 8, 2014);
-		datas.comProcessamento(20, 8, 2014);
-		datas.comVencimento(27, 8, 2014);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('08-20-2014');
+		datas.comProcessamento('08-20-2014');
+		datas.comVencimento('08-27-2014');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comCarteira('157');
@@ -194,16 +195,16 @@ module.exports = {
 		beneficiario.comNossoNumero('02891620');
 		beneficiario.comDigitoNossoNumero('8');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 
-	    boleto = Boleto.novoBoleto();
-	    boleto.comEspecieDocumento('DSI');
-	    boleto.comDatas(datas);
-	    boleto.comBeneficiario(beneficiario);
-	    boleto.comBanco(banco);
-	    boleto.comPagador(pagador);
-	    boleto.comValorBoleto(115.38);
-	    boleto.comNumeroDoDocumento('4');
+		boleto = Boleto.novoBoleto();
+		boleto.comEspecieDocumento('DSI');
+		boleto.comDatas(datas);
+		boleto.comBeneficiario(beneficiario);
+		boleto.comBanco(banco);
+		boleto.comPagador(pagador);
+		boleto.comValorBoleto(115.38);
+		boleto.comNumeroDoDocumento('4');
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
@@ -215,10 +216,10 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 6': function(test) {
-		datas = Datas.novasDatas();
-		datas.comDocumento(19, 9, 2014);
-		datas.comProcessamento(19, 9, 2014);
-		datas.comVencimento(26, 9, 2014);
+		const datas = Datas.novasDatas();
+		datas.comDocumento('09-19-2014');
+		datas.comProcessamento('09-19-2014');
+		datas.comVencimento('09-26-2014');
 
 		beneficiario = Beneficiario.novoBeneficiario();
 		beneficiario.comCarteira('157');
@@ -227,16 +228,16 @@ module.exports = {
 		beneficiario.comNossoNumero('07967777');
 		beneficiario.comDigitoNossoNumero('4');
 
-		pagador = Pagador.novoPagador();
+		const pagador = Pagador.novoPagador();
 
-	    boleto = Boleto.novoBoleto();
-	    boleto.comEspecieDocumento('FS');
-	    boleto.comDatas(datas);
-	    boleto.comBeneficiario(beneficiario);
-	    boleto.comBanco(banco);
-	    boleto.comPagador(pagador);
-	    boleto.comValorBoleto(230.76);
-	    boleto.comNumeroDoDocumento('5');
+		boleto = Boleto.novoBoleto();
+		boleto.comEspecieDocumento('FS');
+		boleto.comDatas(datas);
+		boleto.comBeneficiario(beneficiario);
+		boleto.comBanco(banco);
+		boleto.comPagador(pagador);
+		boleto.comValorBoleto(230.76);
+		boleto.comNumeroDoDocumento('5');
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
@@ -280,10 +281,10 @@ module.exports = {
 	},
 
 	'Verifica criação de pdf': function(test) { //Mover para teste adequado
-		var datas2 = Datas.novasDatas();
-		datas2.comDocumento(19, 9, 2014);
-		datas2.comProcessamento(19, 9, 2014);
-		datas2.comVencimento(26, 9, 2014);
+		const datas2 = Datas.novasDatas();
+		datas2.comDocumento('09-19-2014');
+		datas2.comProcessamento('09-19-2014');
+		datas2.comVencimento('09-26-2014');
 
 		var beneficiario2 = Beneficiario.novoBeneficiario();
 		beneficiario2.comNome('José da Silva');
@@ -297,14 +298,14 @@ module.exports = {
 		var pagador2 = Pagador.novoPagador();
 		pagador2.comNome('Asnésio da Silva');
 
-	    var boleto2 = Boleto.novoBoleto();
-	    boleto2.comEspecieDocumento('FS');
-	    boleto2.comDatas(datas2);
-	    boleto2.comBeneficiario(beneficiario2);
-	    boleto2.comBanco(banco);
-	    boleto2.comPagador(pagador2);
-	    boleto2.comValorBoleto(230.76);
-	    boleto2.comNumeroDoDocumento('5');
+		var boleto2 = Boleto.novoBoleto();
+		boleto2.comEspecieDocumento('FS');
+		boleto2.comDatas(datas2);
+		boleto2.comBeneficiario(beneficiario2);
+		boleto2.comBanco(banco);
+		boleto2.comPagador(pagador2);
+		boleto2.comValorBoleto(230.76);
+		boleto2.comNumeroDoDocumento('5');
 		boleto2.comBanco(banco);
 
 		var enderecoDoPagador = Endereco.novoEndereco();
@@ -314,7 +315,7 @@ module.exports = {
 		enderecoDoPagador.comCidade('Rio de Janeiro');
 		enderecoDoPagador.comUf('RJ');
 
-		pagador.comEndereco(enderecoDoPagador);
+		pagador2.comEndereco(enderecoDoPagador);
 
 		boleto.comLocaisDePagamento([
 			'Pagável em qualquer banco ou casa lotérica até o vencimento',
@@ -329,20 +330,13 @@ module.exports = {
 			'Agradecemos a preferência, volte sempre!'
 		]);
 
-		var geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
-
-		geradorDeBoleto.gerarPDF(function boletosGerados(err, pdf) {
-			test.ifError(err);
-
-			var caminhoDoArquivo = path.join(__dirname, '/boleto.pdf');
-			writeStream = fs.createWriteStream(caminhoDoArquivo);
-
-			pdf.pipe(writeStream);
-
-			writeStream.on('close', function() {
-				test.ok(fs.existsSync(caminhoDoArquivo));
-				test.done();
-			});
+		// const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
+		new PdfGerador([boleto, boleto2]).pdfFile(
+			'../tests/boleto/bancos/boleto-itau.pdf'
+		).then(async({path})=>{
+			test.ok(fs.existsSync(path));
+			test.equal(fs.unlinkSync(path), undefined);
+			test.done();
 		});
 	}
 };
