@@ -1,8 +1,8 @@
 {
   "name": "gerar-boletos",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Gerar boletos para vários bancos",
-  "main": "index.js",
+  "main": "lib/index.js",
   "directories": {
     "example": "examples",
     "lib": "lib",
