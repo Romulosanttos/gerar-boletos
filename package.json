@@ -1,5 +1,5 @@
 {
-  "name": "gerar-boletos_top",
+  "name": "gerar-boletos-top",
   "version": "1.0.0",
   "description": "Gerar boletos para vários bancos",
   "main": "lib/index.js",
