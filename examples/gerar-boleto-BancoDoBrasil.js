@@ -47,12 +47,14 @@ async function gerarBoletoBB(){
         processamento: '02-04-2019',
         documentos: '02-04-2019'
       },
-      emv: "teste.com.br",
+      emv: "teste.com.br", //preencher aqui com o texto do Pix Copia e Copia,
       imagemQrCode: "",
     }
   };
 
-  boleto.boleto.imagemQrCode = await gerarQrCodePix(boleto.boleto.emv);
+  if (boleto.boleto.emv){
+    boleto.boleto.imagemQrCode = await gerarQrCodePix(boleto.boleto.emv);
+  }
 
   const novoBoleto = new Boletos(boleto);
   novoBoleto.gerarBoleto();
