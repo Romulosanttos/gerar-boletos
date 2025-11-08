@@ -51,7 +51,7 @@ novoBoleto.gerarBoleto();
 
 console.log('🏦 Gerando boleto Bradesco...');
 
-novoBoleto.pdfFile('./tmp/boletos', 'boleto-bradesco').then(async ({ boleto, stream }) => {
+novoBoleto.pdfFile('./tmp/boletos', 'boleto-bradesco').then(async ({ stream }) => {
   console.log('✅ PDF do Bradesco gerado com sucesso!');
   console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bradesco.pdf');
   

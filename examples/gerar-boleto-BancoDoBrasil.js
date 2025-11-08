@@ -56,7 +56,7 @@ console.log('🏛️ Gerando boleto Banco do Brasil...');
 async function gerarBoleto() {
   try {
     // Usando pdfFile com async/await
-    const { boleto, stream } = await novoBoleto.pdfFile('./tmp/boletos', 'boleto-bb');
+    const { stream } = await novoBoleto.pdfFile('./tmp/boletos', 'boleto-bb');
     
     console.log('✅ PDF do Banco do Brasil gerado com sucesso!');
     console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bb.pdf');
@@ -67,17 +67,17 @@ async function gerarBoleto() {
     console.error('❌ Erro ao gerar boleto Banco do Brasil:', error.message);
     
     switch (error.code) {
-      case 'ENOENT':
-        console.error('📂 Diretório não encontrado. Verifique o caminho especificado.');
-        break;
-      case 'EACCES':
-        console.error('🔒 Sem permissão para escrever no diretório.');
-        break;
-      default:
-        console.error('🔧 Erro desconhecido. Verifique os dados do boleto.');
-        if (error.stack) {
-          console.error('📋 Stack trace:', error.stack.split('\n')[0]);
-        }
+    case 'ENOENT':
+      console.error('📂 Diretório não encontrado. Verifique o caminho especificado.');
+      break;
+    case 'EACCES':
+      console.error('🔒 Sem permissão para escrever no diretório.');
+      break;
+    default:
+      console.error('🔧 Erro desconhecido. Verifique os dados do boleto.');
+      if (error.stack) {
+        console.error('📋 Stack trace:', error.stack.split('\n')[0]);
+      }
     }
   }
 }

@@ -56,7 +56,7 @@ novoBoleto.gerarBoleto();
 console.log('🌱 Gerando boleto Sicredi...');
 
 // Exemplo usando pdfFile com tratamento de erro melhorado (PR #39)
-novoBoleto.pdfFile('./tmp/boletos', 'boleto-sicredi').then(async ({ boleto, stream }) => {
+novoBoleto.pdfFile('./tmp/boletos', 'boleto-sicredi').then(async ({ stream }) => {
   console.log('✅ PDF do Sicredi gerado com sucesso!');
   console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-sicredi.pdf');
   
@@ -82,7 +82,7 @@ console.log('\n📄 Exemplo alternativo usando pdfStream:');
 const fs = require('fs');
 const streamOutput = fs.createWriteStream('./tmp/boletos/sicredi-stream.pdf');
 
-novoBoleto.pdfStream(streamOutput).then(async ({ boleto, stream }) => {
+novoBoleto.pdfStream(streamOutput).then(async ({ stream }) => {
   console.log('✅ PDF via stream gerado com sucesso!');
   console.log('📁 Arquivo: ./tmp/boletos/sicredi-stream.pdf');
   

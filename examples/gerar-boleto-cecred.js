@@ -53,7 +53,7 @@ novoBoleto.gerarBoleto();
 // Exemplo usando pdfFile() com tratamento de erro melhorado (PR #39)
 console.log('🚀 Gerando boleto Cecred...');
 
-novoBoleto.pdfFile('./tmp/boletos', 'boleto-cecred').then(async ({ boleto, stream }) => {
+novoBoleto.pdfFile('./tmp/boletos', 'boleto-cecred').then(async ({ stream }) => {
   console.log('✅ PDF do Cecred gerado com sucesso!');
   console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-cecred.pdf');
   
