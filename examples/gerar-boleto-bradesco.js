@@ -1,4 +1,4 @@
-const { Bancos, Boletos, streamToPromise } = require('../lib/index');
+const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
 
 const boleto = {
   banco: new Bancos.Bradesco(),
@@ -51,8 +51,10 @@ novoBoleto.gerarBoleto();
 
 novoBoleto.pdfFile().then(async ({ stream }) => {
   // ctx.res.set('Content-type', 'application/pdf');	
-  await streamToPromise(stream);
+  await StreamToPromise(stream);
+  console.log('✅ PDF do Bradesco gerado com sucesso!');
 }).catch((error) => {
+  console.error('❌ Erro ao gerar boleto:', error);
   return error;
 });
 
