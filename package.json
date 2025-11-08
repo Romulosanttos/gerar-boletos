@@ -14,10 +14,11 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{js,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,json,md}\"",
-    "gerarBradesco": "node ./examples/gerar-boleto-bradesco.js",
-    "gerarCecred": "node ./examples/gerar-boleto-cecred.js",
-    "gerarBrasil": "node ./examples/gerar-boleto-BancoDoBrasil.js",
-    "gerarSicredi": "node ./examples/gerar-boleto-sicredi.js"
+    "gerar:Bradesco": "node ./examples/gerar-boleto-bradesco.js",
+    "gerar:Cecred": "node ./examples/gerar-boleto-cecred.js",
+    "gerar:Brasil": "node ./examples/gerar-boleto-BancoDoBrasil.js",
+    "gerar:Sicredi": "node ./examples/gerar-boleto-sicredi.js",
+    "gerar:all": "npm run gerar:Bradesco && npm run gerar:Cecred && npm run gerar:Brasil && npm run gerar:Sicredi"
   },
   "keywords": [
     "gerador",
