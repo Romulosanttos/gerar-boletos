@@ -76,8 +76,9 @@ module.exports = {
 	},
 
 	'Verifica geração da linha digitável - 1': function(test) {
+		// Teste seguindo especificação SISPAG CNAB-85 com campo livre de 25 posições
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.57213 89766.660164 74514.590004 6 56550000268016';
+			linhaEsperada = '34191.57213 89766.680162 74514.590004 3 56550000268016';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -110,7 +111,8 @@ module.exports = {
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.74002 01513.568467 20582.590004 6 60290000268016';
+			// Linha digitável conforme SISPAG CNAB-85
+			linhaEsperada = '34191.74002 01513.508463 20582.590004 4 60290000268016';
 
 		test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 		test.done();
@@ -142,7 +144,7 @@ module.exports = {
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.81940 58802.140655 40871.130007 4 60700000057500',
+			linhaEsperada = '34191.81940 58802.170652 40871.130007 5 60700000057500',
 			linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
 
 		test.equal(linhaEsperada, linhaGerada);
@@ -175,7 +177,7 @@ module.exports = {
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.57890 60507.420655 40871.130007 1 61030000011538',
+			linhaEsperada = '34191.57890 60507.450652 40871.130007 1 61030000011538',
 			linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
 
 		test.equal(linhaEsperada, linhaGerada);
@@ -208,7 +210,7 @@ module.exports = {
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.57023 89162.080652 40871.130007 4 61680000011538',
+			linhaEsperada = '34191.57023 89162.010659 40871.130007 9 61680000011538',
 			linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
 
 		test.equal(linhaEsperada, linhaGerada);
@@ -241,7 +243,7 @@ module.exports = {
 		boleto.comBanco(banco);
 
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-			linhaEsperada = '34191.57072 96777.740653 40871.130007 9 61980000023076',
+			linhaEsperada = '34191.57072 96777.770650 40871.130007 1 61980000023076',
 			linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
 
 		test.equal(linhaEsperada, linhaGerada);
@@ -265,8 +267,9 @@ module.exports = {
 
 	'Verifica geração do código de barras': function(test) {
 		var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
-
-		test.equal('34196565500002680161572189766660167451459000', codigoDeBarras);
+		
+		// Código de barras conforme especificação SISPAG CNAB-85
+		test.equal('34193565500002680161572189766680167451459000', codigoDeBarras);
 		test.done();
 	},
 
