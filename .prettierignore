@@ -1,0 +1,9 @@
+# Prettier ignore file
+node_modules/
+dist/
+build/
+coverage/
+tmp/
+*.min.js
+package-lock.json
+*.pdf

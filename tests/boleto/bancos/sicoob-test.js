@@ -2,19 +2,16 @@ const PdfGerador = require('../../../lib/pdf-gerador');
 const fs = require('fs'),
   boletos = require('../../../lib/utils/functions/boletoUtils.js'),
   Sicoob = require('../../../lib/boleto/bancos/sicoob.js'),
-
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
   Pagador = boletos.Pagador,
   Boleto = boletos.Boleto;
 
-let banco,
-  boleto,
-  beneficiario;
+let banco, boleto, beneficiario;
 
 module.exports = {
-  setUp: function(done) {
+  setUp: function (done) {
     const datas = Datas.novasDatas();
     datas.comDocumento('02-01-2016');
     datas.comProcessamento('02-01-2016');
@@ -267,7 +264,7 @@ module.exports = {
   //     test.done();
   // },
 
-  'Verifica que arquivo de imagem do logotipo existe': function(test) {
+  'Verifica que arquivo de imagem do logotipo existe': function (test) {
     test.ok(fs.existsSync(banco.getImagem()));
     test.done();
   },
@@ -277,7 +274,8 @@ module.exports = {
   //     test.done();
   // },
 
-  'Verifica criação de pdf': function(test) { //Mover para teste adequado
+  'Verifica criação de pdf': function (test) {
+    //Mover para teste adequado
 
     const datas2 = Datas.novasDatas();
     datas2.comDocumento('09-19-2014');
@@ -315,24 +313,22 @@ module.exports = {
 
     pagador2.comEndereco(enderecoDoPagador);
 
-    boleto.comLocaisDePagamento([
-      'Pagável em qualquer banco ou casa lotérica até o vencimento'
-    ]);
+    boleto.comLocaisDePagamento(['Pagável em qualquer banco ou casa lotérica até o vencimento']);
 
     boleto.comInstrucoes([
       'Conceder desconto de R$ 10,00 até o vencimento',
       'Multa de R$ 2,34 após o vencimento',
       'Mora de R$ 0,76 ao dia após o vencimento',
       'Protestar após 10 dias de vencido',
-      'Agradecemos a preferência, volte sempre!'
+      'Agradecemos a preferência, volte sempre!',
     ]);
 
-    new PdfGerador([boleto, boleto2]).pdfFile(
-      '../tests/boleto/bancos/boleto-sicoob.pdf'
-    ).then(async({path})=>{
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
-  }
+    new PdfGerador([boleto, boleto2])
+      .pdfFile('../tests/boleto/bancos/boleto-sicoob.pdf')
+      .then(async ({ path }) => {
+        test.ok(fs.existsSync(path));
+        test.equal(fs.unlinkSync(path), undefined);
+        test.done();
+      });
+  },
 };

@@ -12,6 +12,8 @@
     "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
     "gerarBradesco": "node ./examples/gerar-boleto-bradesco.js",
     "gerarCecred": "node ./examples/gerar-boleto-cecred.js",
     "gerarBrasil": "node ./examples/gerar-boleto-BancoDoBrasil.js",
@@ -48,11 +50,14 @@
   "dependencies": {
     "base64-stream": "^1.0.0",
     "date-fns": "^4.1.0",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.15.0"
   },
   "devDependencies": {
-    "eslint": "^6.5.1",
-    "nodeunit": "0.11.3"
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "nodeunit": "^0.11.3",
+    "prettier": "^3.3.3"
   },
   "repository": {
     "type": "git",

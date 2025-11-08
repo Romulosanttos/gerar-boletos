@@ -1,24 +1,22 @@
 const PdfGerador = require('../../../lib/pdf-gerador');
-let fs = require('fs'),
+const fs = require('fs'),
   boletos = require('../../../lib/utils/functions/boletoUtils.js'),
   Bradesco = require('../../../lib/boleto/bancos/bradesco.js'),
   geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
   Pagador = boletos.Pagador,
-  Boleto = boletos.Boleto,
+  Boleto = boletos.Boleto;
 
-  banco,
-  boleto;
+let banco, boleto;
 
 module.exports = {
-  setUp: function(done) {
+  setUp: function (done) {
     banco = new Bradesco();
 
     const datas = Datas.novasDatas();
-		
+
     datas.comDocumento('02-04-2020');
     datas.comProcessamento('02-04-2020');
     datas.comVencimento('02-04-2020');
@@ -63,13 +61,13 @@ module.exports = {
     boleto.comValor(1);
     boleto.comNumeroDoDocumento('4323');
     boleto.comLocaisDePagamento([
-      'Pagável preferencialmente na rede Bradesco ou no Bradesco expresso'
+      'Pagável preferencialmente na rede Bradesco ou no Bradesco expresso',
     ]);
 
     done();
   },
 
-  'Nosso número formatado deve ter 11 digitos': function(test) {
+  'Nosso número formatado deve ter 11 digitos': function (test) {
     const nossoNumero = banco.getNossoNumeroFormatado(boleto.getBeneficiario());
     test.equals(11, nossoNumero.length);
     test.equals('00000000003', nossoNumero);
@@ -77,7 +75,7 @@ module.exports = {
     test.done();
   },
 
-  'Carteira formatado deve ter dois dígitos': function(test) {
+  'Carteira formatado deve ter dois dígitos': function (test) {
     const carteiraFormatado = banco.getCarteiraFormatado(boleto.getBeneficiario());
 
     test.equals(2, carteiraFormatado.length);
@@ -85,7 +83,7 @@ module.exports = {
     test.done();
   },
 
-  'Conta corrente formatada deve ter sete dígitos': function(test) {
+  'Conta corrente formatada deve ter sete dígitos': function (test) {
     const codigoFormatado = banco.getCodigoFormatado(boleto.getBeneficiario());
 
     test.equals(7, codigoFormatado.length);
@@ -93,7 +91,7 @@ module.exports = {
     test.done();
   },
 
-  'Testa geração de linha digitavel': function(test) {
+  'Testa geração de linha digitavel': function (test) {
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
       linhaEsperada = '23792.94909 60000.000004 03000.658009 9 81550000000100';
 
@@ -101,45 +99,45 @@ module.exports = {
     test.done();
   },
 
-  'Testa código de barras': function(test) {
+  'Testa código de barras': function (test) {
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
 
     test.equal('23799815500000001002949060000000000300065800', codigoDeBarras);
     test.done();
   },
 
-  'Verifica nome correto do banco': function(test) {
+  'Verifica nome correto do banco': function (test) {
     test.equals(banco.getNome(), 'Banco Bradesco S.A.');
     test.done();
   },
 
-  'Verifica a numeração correta do banco': function(test) {
+  'Verifica a numeração correta do banco': function (test) {
     test.equal(banco.getNumeroFormatadoComDigito(), '237-2');
     test.done();
   },
 
-  'Verifica que arquivo de imagem do logotipo existe': function(test) {
+  'Verifica que arquivo de imagem do logotipo existe': function (test) {
     test.ok(fs.existsSync(banco.getImagem()));
     test.done();
   },
 
-  'Verifica deve imprimir o nome do banco no boleto': function(test) {
+  'Verifica deve imprimir o nome do banco no boleto': function (test) {
     test.ok(!banco.getImprimirNome());
     test.done();
   },
 
-  'Exibir campo CIP retorna verdadeiro': function(test) {
+  'Exibir campo CIP retorna verdadeiro': function (test) {
     test.equal(banco.exibirCampoCip(), true);
     test.done();
   },
 
-  'Verifica criação de pdf': function(test) {
-    new PdfGerador(boleto).pdfFile(
-      '../tests/boleto/bancos/boleto-bradesco.pdf'
-    ).then(async({path})=>{
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
-  }
+  'Verifica criação de pdf': function (test) {
+    new PdfGerador(boleto)
+      .pdfFile('../tests/boleto/bancos/boleto-bradesco.pdf')
+      .then(async ({ path }) => {
+        test.ok(fs.existsSync(path));
+        test.equal(fs.unlinkSync(path), undefined);
+        test.done();
+      });
+  },
 };

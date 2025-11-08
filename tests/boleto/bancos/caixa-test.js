@@ -1,22 +1,18 @@
 const PdfGerador = require('../../../lib/pdf-gerador');
-let fs = require('fs'),
+const fs = require('fs'),
   boletos = require('../../../lib/utils/functions/boletoUtils.js'),
   Caixa = require('../../../lib/boleto/bancos/caixa.js'),
   geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
   Pagador = boletos.Pagador,
-  Boleto = boletos.Boleto,
+  Boleto = boletos.Boleto;
 
-  banco,
-  boletoSinco,
-  boletoSicgb,
-  beneficiario;
+let banco, boletoSinco, boletoSicgb, beneficiario;
 
 module.exports = {
-  setUp: function(done) {
+  setUp: function (done) {
     banco = new Caixa();
 
     // SINCO
@@ -42,7 +38,7 @@ module.exports = {
     boletoSinco.comBeneficiario(beneficiario);
     boletoSinco.comBanco(banco);
     boletoSinco.comPagador(pagador);
-    boletoSinco.comValorBoleto(4016.10);
+    boletoSinco.comValorBoleto(4016.1);
     boletoSinco.comNumeroDoDocumento(3084373);
 
     // SIGCB
@@ -86,16 +82,14 @@ module.exports = {
     boletoSicgb.comBeneficiario(beneficiario2);
     boletoSicgb.comBanco(banco);
     boletoSicgb.comPagador(pagador2);
-    boletoSicgb.comValorBoleto(80.00);
+    boletoSicgb.comValorBoleto(80.0);
     boletoSicgb.comNumeroDoDocumento('NF100/00000132');
-    boletoSicgb.comLocaisDePagamento([
-      'PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE'
-    ]);
+    boletoSicgb.comLocaisDePagamento(['PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE']);
 
     done();
   },
 
-  'Nosso número formatado deve ter 17 digitos': function(test) {
+  'Nosso número formatado deve ter 17 digitos': function (test) {
     // var nossoNumeroSinco = banco.getNossoNumeroFormatado(boletoSinco.getBeneficiario());
     // test.equals(17, nossoNumeroSinco.length);
     // test.equals('990000000003994458', nossoNumeroSinco); //Sinco deve ter 18?
@@ -107,7 +101,7 @@ module.exports = {
     test.done();
   },
 
-  'Carteira formatado deve ter dois dígitos': function(test) {
+  'Carteira formatado deve ter dois dígitos': function (test) {
     const beneficiario = Beneficiario.novoBeneficiario().comCarteira('1'),
       numeroFormatado = banco.getCarteiraFormatado(beneficiario);
 
@@ -116,7 +110,7 @@ module.exports = {
     test.done();
   },
 
-  'Conta corrente formatada deve ter cinco dígitos': function(test) {
+  'Conta corrente formatada deve ter cinco dígitos': function (test) {
     const numeroFormatado = banco.getCodigoFormatado(beneficiario);
 
     test.equals(5, numeroFormatado.length);
@@ -139,7 +133,7 @@ module.exports = {
   //     test.done();
   // },
 
-  'Linha digitavel com carteira SIGCB 1': function(test) {
+  'Linha digitavel com carteira SIGCB 1': function (test) {
     const datas2 = Datas.novasDatas();
     datas2.comDocumento('02-04-2020');
     datas2.comProcessamento('02-04-2020');
@@ -182,9 +176,7 @@ module.exports = {
     boletoSinco.comPagador(pagador2);
     boletoSinco.comValorBoleto(158.76);
     boletoSinco.comNumeroDoDocumento('NF100/00000215');
-    boletoSinco.comLocaisDePagamento([
-      'PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE'
-    ]);
+    boletoSinco.comLocaisDePagamento(['PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE']);
 
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSinco),
       linhaEsperada = '10496.48999 58000.100048 00000.000711 7 81550000015876';
@@ -193,7 +185,7 @@ module.exports = {
     test.done();
   },
 
-  'Linha digitavel com carteira SIGCB 2': function(test) {
+  'Linha digitavel com carteira SIGCB 2': function (test) {
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boletoSicgb),
       linhaEsperada = '10492.90271 45900.200044 00000.013227 5 81550000008000';
 
@@ -379,12 +371,12 @@ module.exports = {
   //     test.done();
   // },
 
-  'Verifica a numeração correta do banco': function(test) {
+  'Verifica a numeração correta do banco': function (test) {
     test.equal(banco.getNumeroFormatadoComDigito(), '104-0');
     test.done();
   },
 
-  'Verifica que arquivo de imagem do logotipo existe': function(test) {
+  'Verifica que arquivo de imagem do logotipo existe': function (test) {
     test.ok(fs.existsSync(banco.getImagem()));
     test.done();
   },
@@ -401,28 +393,28 @@ module.exports = {
   //     test.done();
   // },
 
-  'Exibir campo CIP retorna falso': function(test) {
+  'Exibir campo CIP retorna falso': function (test) {
     test.equal(banco.exibirCampoCip(), false);
     test.done();
   },
 
-  'Verifica criação de pdf - SIGCB 1': function(test) {
-    new PdfGerador(boletoSicgb).pdfFile(
-      '../tests/boleto/bancos/boleto-caixa1.pdf'
-    ).then(async({path})=>{
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
+  'Verifica criação de pdf - SIGCB 1': function (test) {
+    new PdfGerador(boletoSicgb)
+      .pdfFile('../tests/boleto/bancos/boleto-caixa1.pdf')
+      .then(async ({ path }) => {
+        test.ok(fs.existsSync(path));
+        test.equal(fs.unlinkSync(path), undefined);
+        test.done();
+      });
   },
 
-  'Verifica criação de pdf - SIGCB 2': async function(test) {
-    new PdfGerador(boletoSicgb).pdfFile(
-      '../tests/boleto/bancos/boleto-caixa2.pdf'
-    ).then(async({path})=>{
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
-  }
+  'Verifica criação de pdf - SIGCB 2': async function (test) {
+    new PdfGerador(boletoSicgb)
+      .pdfFile('../tests/boleto/bancos/boleto-caixa2.pdf')
+      .then(async ({ path }) => {
+        test.ok(fs.existsSync(path));
+        test.equal(fs.unlinkSync(path), undefined);
+        test.done();
+      });
+  },
 };

@@ -3,19 +3,16 @@ const fs = require('fs'),
   boletos = require('../../../lib/utils/functions/boletoUtils.js'),
   Itau = require('../../../lib/boleto/bancos/itau.js'),
   geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
-
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
   Pagador = boletos.Pagador,
   Boleto = boletos.Boleto;
 
-let banco,
-  boleto,
-  beneficiario;
+let banco, boleto, beneficiario;
 
 module.exports = {
-  setUp: function(done) {
+  setUp: function (done) {
     const datas = Datas.novasDatas();
     datas.comDocumento('03-20-2013');
     datas.comProcessamento('03-20-2013');
@@ -47,7 +44,7 @@ module.exports = {
     done();
   },
 
-  'Nosso número formatado deve ter oito digitos': function(test) {
+  'Nosso número formatado deve ter oito digitos': function (test) {
     const beneficiario = Beneficiario.novoBeneficiario().comNossoNumero('9000206'),
       numeroFormatado = banco.getNossoNumeroFormatado(beneficiario);
 
@@ -56,7 +53,7 @@ module.exports = {
     test.done();
   },
 
-  'Carteira formatado deve ter três dígitos': function(test) {
+  'Carteira formatado deve ter três dígitos': function (test) {
     const beneficiario = Beneficiario.novoBeneficiario().comCarteira('1'),
       numeroFormatado = banco.getCarteiraFormatado(beneficiario);
 
@@ -65,7 +62,7 @@ module.exports = {
     test.done();
   },
 
-  'Conta corrente formatada deve ter cinco dígitos': function(test) {
+  'Conta corrente formatada deve ter cinco dígitos': function (test) {
     const numeroFormatado = banco.getCodigoFormatado(beneficiario);
 
     test.equals(5, numeroFormatado.length);
@@ -73,7 +70,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 1': function(test) {
+  'Verifica geração da linha digitável - 1': function (test) {
     // Teste seguindo especificação SISPAG CNAB-85 com campo livre de 25 posições
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
       linhaEsperada = '34191.57213 89766.680162 74514.590004 3 56550000268016';
@@ -82,7 +79,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 2': function(test) {
+  'Verifica geração da linha digitável - 2': function (test) {
     const datas = Datas.novasDatas();
     datas.comDocumento('03-20-2014');
     datas.comProcessamento('03-20-2014');
@@ -116,7 +113,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 3': function(test) {
+  'Verifica geração da linha digitável - 3': function (test) {
     const datas = Datas.novasDatas();
     datas.comDocumento('05-21-2014');
     datas.comProcessamento('05-21-2014');
@@ -149,7 +146,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 4': function(test) {
+  'Verifica geração da linha digitável - 4': function (test) {
     const datas = Datas.novasDatas();
     datas.comDocumento('05-29-2014');
     datas.comProcessamento('05-29-2014');
@@ -182,7 +179,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 5': function(test) {
+  'Verifica geração da linha digitável - 5': function (test) {
     const datas = Datas.novasDatas();
     datas.comDocumento('08-20-2014');
     datas.comProcessamento('08-20-2014');
@@ -215,7 +212,7 @@ module.exports = {
     test.done();
   },
 
-  'Verifica geração da linha digitável - 6': function(test) {
+  'Verifica geração da linha digitável - 6': function (test) {
     const datas = Datas.novasDatas();
     datas.comDocumento('09-19-2014');
     datas.comProcessamento('09-19-2014');
@@ -248,40 +245,41 @@ module.exports = {
     test.done();
   },
 
-  'Verifica nome correto do banco': function(test) {
+  'Verifica nome correto do banco': function (test) {
     test.equals(banco.getNome(), 'Banco Itaú S/A');
     test.done();
   },
 
-  'Verifica a numeração correta do banco': function(test) {
+  'Verifica a numeração correta do banco': function (test) {
     test.equal(banco.getNumeroFormatadoComDigito(), '341-7');
     test.done();
   },
 
-  'Verifica deve imprimir o nome do banco no boleto': function(test) {
+  'Verifica deve imprimir o nome do banco no boleto': function (test) {
     test.ok(banco.getImprimirNome());
     test.done();
   },
 
-  'Verifica geração do código de barras': function(test) {
+  'Verifica geração do código de barras': function (test) {
     const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
-		
+
     // Código de barras conforme especificação SISPAG CNAB-85
     test.equal('34193565500002680161572189766680167451459000', codigoDeBarras);
     test.done();
   },
 
-  'Verifica que arquivo de imagem do logotipo existe': function(test){
+  'Verifica que arquivo de imagem do logotipo existe': function (test) {
     test.ok(fs.existsSync(banco.getImagem()));
     test.done();
   },
 
-  'Exibir campo CIP retorna falso': function(test){
+  'Exibir campo CIP retorna falso': function (test) {
     test.equal(banco.exibirCampoCip(), false);
     test.done();
   },
 
-  'Verifica criação de pdf': function(test) { //Mover para teste adequado
+  'Verifica criação de pdf': function (test) {
+    //Mover para teste adequado
     const datas2 = Datas.novasDatas();
     datas2.comDocumento('09-19-2014');
     datas2.comProcessamento('09-19-2014');
@@ -320,7 +318,7 @@ module.exports = {
 
     boleto.comLocaisDePagamento([
       'Pagável em qualquer banco ou casa lotérica até o vencimento',
-      'Após o vencimento pagável apenas em agências Itaú'
+      'Após o vencimento pagável apenas em agências Itaú',
     ]);
 
     boleto.comInstrucoes([
@@ -328,16 +326,16 @@ module.exports = {
       'Multa de R$ 2,34 após o vencimento',
       'Mora de R$ 0,76 ao dia após o vencimento',
       'Protestar após 10 dias de vencido',
-      'Agradecemos a preferência, volte sempre!'
+      'Agradecemos a preferência, volte sempre!',
     ]);
 
     // const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
-    new PdfGerador([boleto, boleto2]).pdfFile(
-      '../tests/boleto/bancos/boleto-itau.pdf'
-    ).then(async({path})=>{
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
-  }
+    new PdfGerador([boleto, boleto2])
+      .pdfFile('../tests/boleto/bancos/boleto-itau.pdf')
+      .then(async ({ path }) => {
+        test.ok(fs.existsSync(path));
+        test.equal(fs.unlinkSync(path), undefined);
+        test.done();
+      });
+  },
 };
