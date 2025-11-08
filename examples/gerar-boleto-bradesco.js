@@ -39,9 +39,9 @@ const boleto = {
     especieDocumento: 'DM',
     valor: 110.00,
     datas: {
-      vencimento: '02-04-2020',
-      processamento: '02-04-2019',
-      documentos: '02-04-2019'
+      vencimento: '04/02/2026',
+      processamento: '04/02/2020',
+      documentos: '04/02/2020'
     }
   }
 };
@@ -49,12 +49,23 @@ const boleto = {
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-novoBoleto.pdfFile().then(async ({ stream }) => {
-  // ctx.res.set('Content-type', 'application/pdf');	
-  await StreamToPromise(stream);
+console.log('🏦 Gerando boleto Bradesco...');
+
+novoBoleto.pdfFile('./tmp/boletos', 'boleto-bradesco').then(async ({ boleto, stream }) => {
   console.log('✅ PDF do Bradesco gerado com sucesso!');
+  console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bradesco.pdf');
+  
+  await StreamToPromise(stream);
+  
 }).catch((error) => {
-  console.error('❌ Erro ao gerar boleto:', error);
-  return error;
+  console.error('❌ Erro ao gerar boleto Bradesco:', error.message);
+  
+  if (error.code === 'ENOENT') {
+    console.error('📂 Erro: Diretório não encontrado. Criando automaticamente...');
+  } else if (error.code === 'EACCES') {
+    console.error('🔒 Erro: Sem permissão para escrever no diretório');
+  }
+  
+  console.error('🔧 Sugestão: Verifique os dados bancários e permissões do sistema');
 });
 

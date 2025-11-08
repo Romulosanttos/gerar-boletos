@@ -49,14 +49,41 @@ const boleto = {
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-novoBoleto.pdfFile().then(async ({ stream }) => {
-  // ctx.res.set('Content-type', 'application/pdf');	
-  await StreamToPromise(stream);
-  console.log('✅ PDF do Banco do Brasil gerado com sucesso!');
-}).catch((error) => {
-  console.error('❌ Erro ao gerar boleto:', error);
-  return error;
-});
+// Exemplo com tratamento de erro melhorado (PR #39)
+console.log('🏛️ Gerando boleto Banco do Brasil...');
+
+// Demonstrando diferentes formas de uso
+async function gerarBoleto() {
+  try {
+    // Usando pdfFile com async/await
+    const { boleto, stream } = await novoBoleto.pdfFile('./tmp/boletos', 'boleto-bb');
+    
+    console.log('✅ PDF do Banco do Brasil gerado com sucesso!');
+    console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bb.pdf');
+    
+    await StreamToPromise(stream);
+    
+  } catch (error) {
+    console.error('❌ Erro ao gerar boleto Banco do Brasil:', error.message);
+    
+    switch (error.code) {
+      case 'ENOENT':
+        console.error('📂 Diretório não encontrado. Verifique o caminho especificado.');
+        break;
+      case 'EACCES':
+        console.error('🔒 Sem permissão para escrever no diretório.');
+        break;
+      default:
+        console.error('🔧 Erro desconhecido. Verifique os dados do boleto.');
+        if (error.stack) {
+          console.error('📋 Stack trace:', error.stack.split('\n')[0]);
+        }
+    }
+  }
+}
+
+// Executar a função
+gerarBoleto();
 
 
 

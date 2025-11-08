@@ -40,9 +40,9 @@ const boleto = {
     especieDocumento: 'DM',
     valor: 110.00,
     datas: {
-      vencimento: '02-04-2020',
-      processamento: '02-04-2019',
-      documentos: '02-04-2019'
+      vencimento: '04/02/2026',
+      processamento: '04/02/2025',
+      documentos: '04/02/2025'
     }
   }
 };
@@ -50,12 +50,22 @@ const boleto = {
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-novoBoleto.pdfFile().then(async ({ stream }) => {
-  // ctx.res.set('Content-type', 'application/pdf');	
-  await StreamToPromise(stream);
+// Exemplo usando pdfFile() com tratamento de erro melhorado (PR #39)
+console.log('🚀 Gerando boleto Cecred...');
+
+novoBoleto.pdfFile('./tmp/boletos', 'boleto-cecred').then(async ({ boleto, stream }) => {
   console.log('✅ PDF do Cecred gerado com sucesso!');
+  console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-cecred.pdf');
+  
+  await StreamToPromise(stream);
+  
 }).catch((error) => {
-  console.error('❌ Erro ao gerar boleto:', error);
-  return error;
+  console.error('❌ Erro ao gerar boleto Cecred:', error.message);
+  console.error('🔧 Verifique os dados do boleto e permissões de diretório');
+  
+  // Com a correção do PR #39, agora temos acesso completo ao erro
+  if (error.code) {
+    console.error('📋 Código do erro:', error.code);
+  }
 });
 
