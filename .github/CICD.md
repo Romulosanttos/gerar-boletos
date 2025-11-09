@@ -7,20 +7,24 @@ Este projeto utiliza GitHub Actions para automação de CI/CD.
 ### 1. CI (Integração Contínua) - `ci.yml`
 
 Executado em:
+
 - Push para branches: `master`, `main`, `develop`
 - Pull Requests para branches: `master`, `main`, `develop`
 
 **Jobs:**
 
 #### Lint
+
 - Valida o código com ESLint
 - Verifica formatação com Prettier
 
 #### Tests
+
 - Executa testes em múltiplas versões do Node.js (14, 16, 18, 20)
 - Garante compatibilidade entre versões
 
 #### Coverage
+
 - Gera relatório de cobertura de código
 - Salva artefatos do relatório de cobertura por 30 dias
 - Relatórios acessíveis via aba "Actions" do GitHub
@@ -28,6 +32,7 @@ Executado em:
 ### 2. Release (Versionamento) - `release.yml`
 
 Executado em:
+
 - Push para branches: `master`, `main`
 - Ignora mudanças em arquivos de documentação
 
@@ -97,9 +102,10 @@ O workflow está configurado para usar **Trusted Publishers**, que é a forma ma
 #### Passo 2: Ativar publicação no workflow
 
 No arquivo `.github/workflows/release.yml`, altere:
+
 ```yaml
 - name: Publish to NPM (optional)
-  if: false  # ← Mude para true
+  if: false # ← Mude para true
 ```
 
 #### Requisitos:
@@ -130,6 +136,7 @@ Se preferir usar tokens tradicionais (não recomendado):
 ### Permissões
 
 O workflow de release precisa de permissões para:
+
 - Criar tags
 - Criar releases
 - Fazer commit de mudanças de versão
@@ -158,19 +165,23 @@ Adicione ao README.md:
 ## Exemplo de Uso
 
 1. **Desenvolvimento normal:**
+
    ```bash
    git add .
    git commit -m "fix: corrige validação de data"
    git push
    ```
+
    → Executa CI, cria versão PATCH (1.8.0 → 1.8.1)
 
 2. **Nova funcionalidade:**
+
    ```bash
    git add .
    git commit -m "feat: adiciona suporte ao Banco Inter"
    git push
    ```
+
    → Executa CI, cria versão MINOR (1.8.0 → 1.9.0)
 
 3. **Breaking change:**
