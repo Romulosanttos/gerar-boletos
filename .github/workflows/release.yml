@@ -1,20 +1,21 @@
 name: Release and Versioning
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
     branches:
       - master
       - main
-    paths-ignore:
-      - '**.md'
-      - 'LICENSE'
-      - '.gitignore'
 
 jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      !contains(github.event.workflow_run.head_commit.message, 'skip ci')
     
     permissions:
       contents: write
@@ -40,16 +41,7 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run tests with coverage
-        run: npm run test:coverage
+        run: npm install
 
       - name: Configure Git
         run: |

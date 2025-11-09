@@ -31,17 +31,20 @@ Executado em:
 
 ### 2. Release (Versionamento) - `release.yml`
 
+**⚠️ Dependência:** Só executa **após o CI passar com sucesso**
+
 Executado em:
 
-- Push para branches: `master`, `main`
-- Ignora mudanças em arquivos de documentação
+- Após conclusão bem-sucedida do workflow CI
+- Branches: `master`, `main`
+- **Bloqueado automaticamente** se CI falhar
 
 **Fluxo:**
 
-1. **Validação**
-   - Executa lint
-   - Executa todos os testes
-   - Gera cobertura de código
+1. **Validação (já feita pelo CI)**
+   - ✅ Lint passou
+   - ✅ Todos os testes passaram
+   - ✅ Cobertura de código OK
 
 2. **Versionamento Automático**
    - Analisa mensagem do commit para determinar o tipo de versão:
