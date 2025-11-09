@@ -129,6 +129,5 @@ lib-cov
 *.log
 *.out
 *.pid
-package-lock.json
 coverage
 tmp/boletos/*.pdf
