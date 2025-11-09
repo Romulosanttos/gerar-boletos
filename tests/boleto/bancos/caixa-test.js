@@ -1,5 +1,6 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs');
+const path = require('path');
 const Boleto = require('../../../lib/core/boleto');
 const Caixa = require('../../../lib/banks/caixa');
 const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
@@ -9,6 +10,13 @@ const Beneficiario = require('../../../lib/core/beneficiario');
 const Pagador = require('../../../lib/core/pagador');
 let banco, boletoSinco, boletoSicgb, beneficiario;
 const test = require('ava');
+
+test.before(() => {
+  const dir = path.join('tmp', 'boletos');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 test.beforeEach((t) => {
   banco = new Caixa();
@@ -340,7 +348,64 @@ test('Exibir campo CIP retorna falso', (t) => {
 });
 
 test('Verifica criação de pdf - SIGCB 1', async (t) => {
-  const { path } = await new PdfGerador(boletoSicgb).pdfFile('../tests/banks/boleto-caixa1.pdf');
-  t.truthy(fs.existsSync(path));
-  t.is(fs.unlinkSync(path), undefined);
+  // SIGCB
+  const datas2 = Datas.novasDatas();
+  datas2.comDocumento('02-04-2020');
+  datas2.comProcessamento('02-04-2020');
+  datas2.comVencimento('02-04-2020');
+
+  const beneficiario2 = Beneficiario.novoBeneficiario();
+  beneficiario2.comNome('Gammasoft Desenvolvimento de Software Ltda');
+  beneficiario2.comAgencia('589');
+  beneficiario2.comCarteira('24');
+  beneficiario2.comCodigoBeneficiario('290274');
+  beneficiario2.comDigitoCodigoBeneficiario('5');
+  beneficiario2.comNossoNumero('900000000000132');
+  beneficiario2.comDigitoNossoNumero('3');
+  beneficiario2.comRegistroNacional('19950366000150');
+
+  const enderecoDoBeneficiario = Endereco.novoEndereco();
+  enderecoDoBeneficiario.comLogradouro('Rua da Programação');
+  enderecoDoBeneficiario.comBairro('Zona Rural');
+  enderecoDoBeneficiario.comCep('71550050');
+  enderecoDoBeneficiario.comCidade('Patos de Minas');
+  enderecoDoBeneficiario.comUf('MG');
+  beneficiario2.comEndereco(enderecoDoBeneficiario);
+
+  const pagador2 = Pagador.novoPagador();
+  pagador2.comNome('Paulo Fulano da Silva');
+  pagador2.comRegistroNacional('77134854817');
+
+  const enderecoDoPagador = Endereco.novoEndereco();
+  enderecoDoPagador.comLogradouro('Avenida dos Testes Unitários');
+  enderecoDoPagador.comBairro('Barra da Tijuca');
+  enderecoDoPagador.comCep('72000000');
+  enderecoDoPagador.comCidade('Rio de Janeiro');
+  enderecoDoPagador.comUf('RJ');
+  pagador2.comEndereco(enderecoDoPagador);
+
+  const boletoSicgb = Boleto.novoBoleto();
+  boletoSicgb.comDatas(datas2);
+  boletoSicgb.comBeneficiario(beneficiario2);
+  boletoSicgb.comBanco(banco);
+  boletoSicgb.comPagador(pagador2);
+  boletoSicgb.comValorBoleto(80.0);
+  boletoSicgb.comNumeroDoDocumento('NF100/00000132');
+  boletoSicgb.comLocaisDePagamento(['PREFERENCIALMENTE NAS CASAS LOTÉRICAS ATÉ O VALOR LIMITE']);
+
+  const dir = path.join('tmp', 'boletos');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    // Diretório já existe, ignora
+  }
+  await new PdfGerador(boletoSicgb).pdfFile('../../tmp/boletos/boleto-caixa1.pdf');
+  const expectedPath = path.join('tmp', 'boletos', 'boleto-caixa1.pdf');
+  t.truthy(fs.existsSync(expectedPath));
+  try {
+    fs.unlinkSync(expectedPath);
+  } catch (err) {
+    // Arquivo não existe, ignora
+  }
+  t.pass();
 });

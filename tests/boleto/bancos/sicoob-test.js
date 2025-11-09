@@ -1,13 +1,22 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs');
+const path = require('path');
 const Boleto = require('../../../lib/core/boleto');
 const Sicoob = require('../../../lib/banks/sicoob');
+const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
 const Datas = require('../../../lib/core/datas');
 const Endereco = require('../../../lib/core/endereco');
 const Beneficiario = require('../../../lib/core/beneficiario');
 const Pagador = require('../../../lib/core/pagador');
-let banco, boleto, beneficiario;
+let banco, boleto;
 const test = require('ava');
+
+test.before(() => {
+  const dir = path.join('tmp', 'boletos');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 test.beforeEach((t) => {
   const datas = Datas.novasDatas();
@@ -264,7 +273,19 @@ test('Verifica criação de pdf', async (t) => {
     'Protestar após 10 dias de vencido',
     'Agradecemos a preferência, volte sempre!',
   ]);
-  const { path } = await new PdfGerador([boleto, boleto2]).pdfFile('../tests/banks/boleto-sicoob.pdf');
-  t.truthy(fs.existsSync(path));
-  t.is(fs.unlinkSync(path), undefined);
+  const dir = path.join('tmp', 'boletos');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    // Diretório já existe, ignora
+  }
+  await new PdfGerador([boleto, boleto2]).pdfFile('../../tmp/boletos/boleto-sicoob.pdf');
+  const expectedPath = path.join('tmp', 'boletos', 'boleto-sicoob.pdf');
+  t.truthy(fs.existsSync(expectedPath));
+  try {
+    fs.unlinkSync(expectedPath);
+  } catch (err) {
+    // Arquivo não existe, ignora
+  }
+  t.pass();
 });

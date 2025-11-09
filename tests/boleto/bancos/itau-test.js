@@ -1,5 +1,6 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs');
+const path = require('path');
 const Boleto = require('../../../lib/core/boleto');
 const Itau = require('../../../lib/banks/itau');
 const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
@@ -9,6 +10,13 @@ const Beneficiario = require('../../../lib/core/beneficiario');
 const Pagador = require('../../../lib/core/pagador');
 let banco, boleto, beneficiario;
 const test = require('ava');
+
+test.before(() => {
+  const dir = path.join('tmp', 'boletos');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 test.beforeEach((t) => {
   const datas = Datas.novasDatas();
@@ -269,7 +277,19 @@ test('Verifica criação de pdf', async (t) => {
     'Agradecemos a preferência, volte sempre!',
   ]);
   // const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
-  const { path } = await new PdfGerador([boleto, boleto2]).pdfFile('../tests/banks/boleto-itau.pdf');
-  t.truthy(fs.existsSync(path));
-  t.is(fs.unlinkSync(path), undefined);
+  const dir = path.join('tmp', 'boletos');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    // Diretório já existe, ignora
+  }
+  await new PdfGerador([boleto, boleto2]).pdfFile('../../tmp/boletos/boleto-itau.pdf');
+  const expectedPath = path.join('tmp', 'boletos', 'boleto-itau.pdf');
+  t.truthy(fs.existsSync(expectedPath));
+  try {
+    fs.unlinkSync(expectedPath);
+  } catch (err) {
+    // Arquivo não existe, ignora
+  }
+  t.pass();
 });

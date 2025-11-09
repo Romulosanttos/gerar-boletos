@@ -1,5 +1,6 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs');
+const path = require('path');
 const Boleto = require('../../../lib/core/boleto');
 const Bradesco = require('../../../lib/banks/bradesco');
 const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
@@ -9,6 +10,13 @@ const Beneficiario = require('../../../lib/core/beneficiario');
 const Pagador = require('../../../lib/core/pagador');
 let banco, boleto;
 const test = require('ava');
+
+test.before(() => {
+  const dir = path.join('tmp', 'boletos');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 test.beforeEach((t) => {
   banco = new Bradesco();
@@ -106,7 +114,19 @@ test('Exibir campo CIP retorna verdadeiro', (t) => {
 });
 
 test('Verifica criação de pdf', async (t) => {
-  const { path } = await new PdfGerador(boleto).pdfFile('../tests/banks/boleto-bradesco.pdf');
-  t.truthy(fs.existsSync(path));
-  t.is(fs.unlinkSync(path), undefined);
+  const dir = path.join('tmp', 'boletos');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    // Diretório já existe, ignora
+  }
+  await new PdfGerador(boleto).pdfFile('../../tmp/boletos/boleto-bradesco.pdf');
+  const expectedPath = path.join('tmp', 'boletos', 'boleto-bradesco.pdf');
+  t.truthy(fs.existsSync(expectedPath));
+  try {
+    fs.unlinkSync(expectedPath);
+  } catch (err) {
+    // Arquivo não existe, ignora
+  }
+  t.pass();
 });

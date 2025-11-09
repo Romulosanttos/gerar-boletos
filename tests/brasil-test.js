@@ -6,6 +6,12 @@ const utils = require('../lib/index');
 const existsSync =
   process.version.indexOf('v0.6') !== -1 ? require('path').existsSync : fs.existsSync;
 
+// Basic test to ensure the main module exports something
+test('Verifica que o módulo principal está disponível', (t) => {
+  t.truthy(utils);
+  t.is(typeof utils, 'object');
+});
+
 // NOTE: Test commented out - lib structure changed, no *Utils.js files exist anymore
 // test('Verifica que todos os submodulos estão disponíveis', (t) => {
 //   let count = 0;
