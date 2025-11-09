@@ -1,4 +1,4 @@
-const GeradorDeDigitoPadrao = require('../../lib/boleto/gerador-de-digito-padrao');
+const GeradorDeDigitoPadrao = require('../../lib/generators/digit-generator');
 
 module.exports = {
   'Verifica a geração de dígitos mod11': function (test) {

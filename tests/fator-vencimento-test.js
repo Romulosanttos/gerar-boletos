@@ -3,7 +3,7 @@
  * conforme especificação FEBRABAN
  */
 
-const { Boleto, Datas } = require('../lib/utils/functions/boletoUtils');
+const { Boleto, Datas } = require('../lib/core/boleto');
 
 module.exports = {
   primeiroCiclo: {

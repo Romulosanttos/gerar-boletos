@@ -1,10 +1,10 @@
-const Sicredi = require('../../../lib/boleto/bancos/sicredi');
+const Sicredi = require('../../../lib/banks/sicredi');
 const {
   Datas,
   Beneficiario,
   Pagador,
   Boleto,
-} = require('../../../lib/utils/functions/boletoUtils');
+} = require('../../../lib/core/boleto');
 
 module.exports = {
   'Nosso número formatado deve ter oito digitos': function (test) {

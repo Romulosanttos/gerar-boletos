@@ -1,4 +1,4 @@
-const boleto = require('../lib/utils/functions/boletoUtils');
+const boleto = require('../lib/core/boleto');
 const bancos = boleto.bancos;
 const Endereco = boleto.Endereco;
 const Gerador = boleto.Gerador;

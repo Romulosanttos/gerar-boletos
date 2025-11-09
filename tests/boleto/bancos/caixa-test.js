@@ -1,8 +1,8 @@
-const PdfGerador = require('../../../lib/pdf-gerador');
+const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs'),
-  boletos = require('../../../lib/utils/functions/boletoUtils.js'),
-  Caixa = require('../../../lib/boleto/bancos/caixa.js'),
-  geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
+  boletos = require('../../../lib/core/boleto.js'),
+  Caixa = require('../../../lib/banks/caixa.js'),
+  geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter.js'),
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
@@ -400,7 +400,7 @@ module.exports = {
 
   'Verifica criação de pdf - SIGCB 1': function (test) {
     new PdfGerador(boletoSicgb)
-      .pdfFile('../tests/boleto/bancos/boleto-caixa1.pdf')
+      .pdfFile('../tests/banks/boleto-caixa1.pdf')
       .then(async ({ path }) => {
         test.ok(fs.existsSync(path));
         test.equal(fs.unlinkSync(path), undefined);
@@ -410,7 +410,7 @@ module.exports = {
 
   'Verifica criação de pdf - SIGCB 2': async function (test) {
     new PdfGerador(boletoSicgb)
-      .pdfFile('../tests/boleto/bancos/boleto-caixa2.pdf')
+      .pdfFile('../tests/banks/boleto-caixa2.pdf')
       .then(async ({ path }) => {
         test.ok(fs.existsSync(path));
         test.equal(fs.unlinkSync(path), undefined);

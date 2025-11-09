@@ -1,7 +1,7 @@
-const PdfGerador = require('../../../lib/pdf-gerador');
+const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs'),
-  boletos = require('../../../lib/utils/functions/boletoUtils.js'),
-  Sicoob = require('../../../lib/boleto/bancos/sicoob.js'),
+  boletos = require('../../../lib/core/boleto.js'),
+  Sicoob = require('../../../lib/banks/sicoob.js'),
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
@@ -324,7 +324,7 @@ module.exports = {
     ]);
 
     new PdfGerador([boleto, boleto2])
-      .pdfFile('../tests/boleto/bancos/boleto-sicoob.pdf')
+      .pdfFile('../tests/banks/boleto-sicoob.pdf')
       .then(async ({ path }) => {
         test.ok(fs.existsSync(path));
         test.equal(fs.unlinkSync(path), undefined);

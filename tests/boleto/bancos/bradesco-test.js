@@ -1,8 +1,8 @@
-const PdfGerador = require('../../../lib/pdf-gerador');
+const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs'),
-  boletos = require('../../../lib/utils/functions/boletoUtils.js'),
-  Bradesco = require('../../../lib/boleto/bancos/bradesco.js'),
-  geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
+  boletos = require('../../../lib/core/boleto.js'),
+  Bradesco = require('../../../lib/banks/bradesco.js'),
+  geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter.js'),
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
@@ -133,7 +133,7 @@ module.exports = {
 
   'Verifica criação de pdf': function (test) {
     new PdfGerador(boleto)
-      .pdfFile('../tests/boleto/bancos/boleto-bradesco.pdf')
+      .pdfFile('../tests/banks/boleto-bradesco.pdf')
       .then(async ({ path }) => {
         test.ok(fs.existsSync(path));
         test.equal(fs.unlinkSync(path), undefined);

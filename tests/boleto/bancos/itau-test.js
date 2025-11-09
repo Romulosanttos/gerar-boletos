@@ -1,8 +1,8 @@
-const PdfGerador = require('../../../lib/pdf-gerador');
+const PdfGerador = require('../../../lib/generators/pdf-generator');
 const fs = require('fs'),
-  boletos = require('../../../lib/utils/functions/boletoUtils.js'),
-  Itau = require('../../../lib/boleto/bancos/itau.js'),
-  geradorDeLinhaDigitavel = require('../../../lib/boleto/gerador-de-linha-digitavel.js'),
+  boletos = require('../../../lib/core/boleto.js'),
+  Itau = require('../../../lib/banks/itau.js'),
+  geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter.js'),
   Datas = boletos.Datas,
   Endereco = boletos.Endereco,
   Beneficiario = boletos.Beneficiario,
@@ -331,7 +331,7 @@ module.exports = {
 
     // const geradorDeBoleto = new GeradorDeBoleto([boleto, boleto2]);
     new PdfGerador([boleto, boleto2])
-      .pdfFile('../tests/boleto/bancos/boleto-itau.pdf')
+      .pdfFile('../tests/banks/boleto-itau.pdf')
       .then(async ({ path }) => {
         test.ok(fs.existsSync(path));
         test.equal(fs.unlinkSync(path), undefined);
