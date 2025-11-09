@@ -130,4 +130,4 @@ lib-cov
 *.out
 *.pid
 package-lock.json
-
+coverage

@@ -9,7 +9,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "nodeunit ./tests/*test.js && nodeunit ./tests/boleto/bancos/*test.js && nodeunit ./tests/boleto/*test.js",
+    "test": "ava",
+    "test:watch": "ava --watch",
+    "test:coverage": "c8 --reporter=text --reporter=html --reporter=lcov ava",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{js,json,md}\"",
@@ -54,11 +56,18 @@
     "pdfkit": "^0.15.0"
   },
   "devDependencies": {
+    "ava": "^6.4.1",
+    "c8": "^10.1.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "nodeunit": "^0.11.3",
     "prettier": "^3.3.3"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*test.js"
+    ],
+    "timeout": "2m"
   },
   "repository": {
     "type": "git",

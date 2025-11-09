@@ -1,384 +1,310 @@
+const test = require('ava');
 const { formatacoes } = require('../lib/index');
 
-module.exports = {
-  removerMascara: {
-    'Remove mascara de dinheiro': function (test) {
-      test.equal(formatacoes.removerMascara('R$ 12,23'), '12,23');
-      test.done();
-    },
-    'Remove mascaras de porcentagem': function (test) {
-      test.equal(formatacoes.removerMascara('10%'), '10');
-      test.equal(formatacoes.removerMascara('8,34 %'), '8,34');
-      test.done();
-    },
-    'Remove mascaras de Cnpj': function (test) {
-      test.equal(formatacoes.removerMascara('18.028.400/0001-70'), '18028400000170');
-      test.done();
-    },
-    'Remove mascaras de Cpf': function (test) {
-      test.equal(formatacoes.removerMascara('934.621.219-52'), '93462121952');
-      test.done();
-    },
-    'Remove mascaras de Telefone': function (test) {
-      test.equal(formatacoes.removerMascara('(61) 8633-3051'), '6186333051');
-      test.done();
-    },
-    'Remove mascaras de Placa': function (test) {
-      test.equal(formatacoes.removerMascara('ABC-2366'), 'ABC2366');
-      test.done();
-    },
-    'Remove mascaras de Cep': function (test) {
-      test.equal(formatacoes.removerMascara('71.530-070'), '71530070');
-      test.done();
-    },
+// removerMascara tests
+test('removerMascara - Remove mascara de dinheiro', (t) => {
+  t.is(formatacoes.removerMascara('R$ 12,23'), '12,23');
+});
 
-    'Remove espaços em branco no começo e no final': function (test) {
-      test.equal(formatacoes.removerMascara('    71.420-070  \t'), '71420070');
-      test.done();
-    },
+test('removerMascara - Remove mascaras de porcentagem', (t) => {
+  t.is(formatacoes.removerMascara('10%'), '10');
+  t.is(formatacoes.removerMascara('8,34 %'), '8,34');
+});
 
-    'Se for passado algo que não é uma string então o mesmo é retornado': function (test) {
-      test.equal(formatacoes.removerMascara(null), null);
-      test.equal(formatacoes.removerMascara({}.devolvaUndefined), undefined);
-      test.equal(formatacoes.removerMascara(123), 123);
-      test.done();
-    },
-  },
+test('removerMascara - Remove mascaras de Cnpj', (t) => {
+  t.is(formatacoes.removerMascara('18.028.400/0001-70'), '18028400000170');
+});
 
-  dinheiro: {
-    'Trata casas decimais por padrão': function (test) {
-      test.equal(formatacoes.dinheiro(1), 'R$ 1,00');
-      test.equal(formatacoes.dinheiro(12), 'R$ 12,00');
-      test.equal(formatacoes.dinheiro(123), 'R$ 123,00');
-      test.equal(formatacoes.dinheiro(1234), 'R$ 1.234,00');
-      test.equal(formatacoes.dinheiro(12345), 'R$ 12.345,00');
-      test.done();
-    },
+test('removerMascara - Remove mascaras de Cpf', (t) => {
+  t.is(formatacoes.removerMascara('934.621.219-52'), '93462121952');
+});
 
-    'Não arredonda, simplesmente corta as casas decimais além do especificado': function (test) {
-      test.equal(formatacoes.dinheiro(35.855), 'R$ 35,85');
-      test.equal(formatacoes.dinheiro(35.859), 'R$ 35,85');
+test('removerMascara - Remove mascaras de Telefone', (t) => {
+  t.is(formatacoes.removerMascara('(61) 8633-3051'), '6186333051');
+});
 
-      test.equal(
-        formatacoes.dinheiro(35.855, {
-          casasDecimais: 3,
-        }),
-        'R$ 35,855'
-      );
+test('removerMascara - Remove mascaras de Placa', (t) => {
+  t.is(formatacoes.removerMascara('ABC-2366'), 'ABC2366');
+});
 
-      test.equal(
-        formatacoes.dinheiro(35.859, {
-          casasDecimais: 3,
-        }),
-        'R$ 35,859'
-      );
+test('removerMascara - Remove mascaras de Cep', (t) => {
+  t.is(formatacoes.removerMascara('71.530-070'), '71530070');
+});
 
-      test.equal(formatacoes.dinheiro(1.005), 'R$ 1,00');
-      test.equal(
-        formatacoes.dinheiro(1.005, {
-          casasDecimais: 3,
-        }),
-        'R$ 1,005'
-      );
+test('removerMascara - Remove espaços em branco no começo e no final', (t) => {
+  t.is(formatacoes.removerMascara('    71.420-070  \t'), '71420070');
+});
 
-      test.done();
-    },
+test('removerMascara - Se for passado algo que não é uma string então o mesmo é retornado', (t) => {
+  t.is(formatacoes.removerMascara(null), null);
+  t.is(formatacoes.removerMascara({}.devolvaUndefined), undefined);
+  t.is(formatacoes.removerMascara(123), 123);
+});
 
-    'É possível passar outro símbolo': function (test) {
-      test.equal(
-        formatacoes.dinheiro(73.315, {
-          simbolo: 'BRL ',
-        }),
-        'BRL 73,31'
-      );
+// dinheiro tests
+test('dinheiro - Trata casas decimais por padrão', (t) => {
+  t.is(formatacoes.dinheiro(1), 'R$ 1,00');
+  t.is(formatacoes.dinheiro(12), 'R$ 12,00');
+  t.is(formatacoes.dinheiro(123), 'R$ 123,00');
+  t.is(formatacoes.dinheiro(1234), 'R$ 1.234,00');
+  t.is(formatacoes.dinheiro(12345), 'R$ 12.345,00');
+});
 
-      test.done();
-    },
+test('dinheiro - Não arredonda, simplesmente corta as casas decimais além do especificado', (t) => {
+  t.is(formatacoes.dinheiro(35.855), 'R$ 35,85');
+  t.is(formatacoes.dinheiro(35.859), 'R$ 35,85');
 
-    'É possível posicionar o símbolo a direita': function (test) {
-      test.equal(
-        formatacoes.dinheiro(859.385, {
-          simbolo: 'BRL',
-          posicionamento: 'direita',
-        }),
-        '859,38BRL'
-      );
+  t.is(
+    formatacoes.dinheiro(35.855, {
+      casasDecimais: 3,
+    }),
+    'R$ 35,855'
+  );
 
-      test.done();
-    },
-  },
+  t.is(
+    formatacoes.dinheiro(35.859, {
+      casasDecimais: 3,
+    }),
+    'R$ 35,859'
+  );
 
-  dinheiroPorExtenso: {
-    'Escreve o valor R$ 0,00 adequadamente': function (test) {
-      test.equal(formatacoes.dinheiroPorExtenso(0), 'zero reais');
-      test.done();
-    },
+  t.is(formatacoes.dinheiro(1.005), 'R$ 1,00');
+  t.is(
+    formatacoes.dinheiro(1.005, {
+      casasDecimais: 3,
+    }),
+    'R$ 1,005'
+  );
+});
 
-    'Escreve o valor R$ 1,00 adequadamente': function (test) {
-      test.equal(formatacoes.dinheiroPorExtenso(1), 'um real');
-      test.done();
-    },
+test('dinheiro - É possível passar outro símbolo', (t) => {
+  t.is(
+    formatacoes.dinheiro(73.315, {
+      simbolo: 'BRL ',
+    }),
+    'BRL 73,31'
+  );
+});
 
-    'Escreve o valor R$ 2,00 adequadamente': function (test) {
-      test.equal(formatacoes.dinheiroPorExtenso(2), 'dois reais');
-      test.done();
-    },
+test('dinheiro - É possível posicionar o símbolo a direita', (t) => {
+  t.is(
+    formatacoes.dinheiro(859.385, {
+      simbolo: 'BRL',
+      posicionamento: 'direita',
+    }),
+    '859,38BRL'
+  );
+});
 
-    'Escreve o valor R$ 17,34 adequadamente': function (test) {
-      test.equal(
-        formatacoes.dinheiroPorExtenso(17.34),
-        'dezessete reais e trinta e quatro centavos'
-      );
-      test.done();
-    },
+// dinheiroPorExtenso tests
+test('dinheiroPorExtenso - Escreve o valor R$ 0,00 adequadamente', (t) => {
+  t.is(formatacoes.dinheiroPorExtenso(0), 'zero reais');
+});
 
-    'Escreve o valor R$ 432,97 adequadamente': function (test) {
-      test.equal(
-        formatacoes.dinheiroPorExtenso(432.97),
-        'quatrocentos e trinta e dois reais e noventa e sete centavos'
-      );
-      test.done();
-    },
+test('dinheiroPorExtenso - Escreve o valor R$ 1,00 adequadamente', (t) => {
+  t.is(formatacoes.dinheiroPorExtenso(1), 'um real');
+});
 
-    'Escreve o valor R$ 1234,56 adequadamente': function (test) {
-      test.equal(
-        formatacoes.dinheiroPorExtenso(1234.56),
-        'um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
-      );
-      test.done();
-    },
+test('dinheiroPorExtenso - Escreve o valor R$ 2,00 adequadamente', (t) => {
+  t.is(formatacoes.dinheiroPorExtenso(2), 'dois reais');
+});
 
-    'Escreve o valor R$ 21234,56 adequadamente': function (test) {
-      test.equal(
-        formatacoes.dinheiroPorExtenso(21234.56),
-        'vinte e um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
-      );
-      test.done();
-    },
+test('dinheiroPorExtenso - Escreve o valor R$ 17,34 adequadamente', (t) => {
+  t.is(formatacoes.dinheiroPorExtenso(17.34), 'dezessete reais e trinta e quatro centavos');
+});
 
-    'Escreve o valor R$ 121234,56 adequadamente': function (test) {
-      test.equal(
-        formatacoes.dinheiroPorExtenso(121234.56),
-        'cento e vinte e um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
-      );
-      test.done();
-    },
-  },
+test('dinheiroPorExtenso - Escreve o valor R$ 432,97 adequadamente', (t) => {
+  t.is(
+    formatacoes.dinheiroPorExtenso(432.97),
+    'quatrocentos e trinta e dois reais e noventa e sete centavos'
+  );
+});
 
-  numero: {
-    'Por padrão não trata casas decimais a menos que você especifique': function (test) {
-      test.equal(formatacoes.numero(1), '1');
-      test.equal(formatacoes.numero(1.0), '1');
-      test.equal(formatacoes.numero(1.01), '1,01');
+test('dinheiroPorExtenso - Escreve o valor R$ 1234,56 adequadamente', (t) => {
+  t.is(
+    formatacoes.dinheiroPorExtenso(1234.56),
+    'um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
+  );
+});
 
-      test.equal(
-        formatacoes.numero(1.0, {
-          casasDecimais: 2,
-        }),
-        '1,00'
-      );
+test('dinheiroPorExtenso - Escreve o valor R$ 21234,56 adequadamente', (t) => {
+  t.is(
+    formatacoes.dinheiroPorExtenso(21234.56),
+    'vinte e um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
+  );
+});
 
-      test.equal(
-        formatacoes.numero(1.01, {
-          casasDecimais: 3,
-        }),
-        '1,010'
-      );
+test('dinheiroPorExtenso - Escreve o valor R$ 121234,56 adequadamente', (t) => {
+  t.is(
+    formatacoes.dinheiroPorExtenso(121234.56),
+    'cento e vinte e um mil e duzentos e trinta e quatro reais e cinquenta e seis centavos'
+  );
+});
 
-      test.done();
-    },
+// numero tests
+test('numero - Por padrão não trata casas decimais a menos que você especifique', (t) => {
+  t.is(formatacoes.numero(1), '1');
+  t.is(formatacoes.numero(1.0), '1');
+  t.is(formatacoes.numero(1.01), '1,01');
 
-    'Pocisiona separador de milhar padrão': function (test) {
-      test.equal(formatacoes.numero(1234.2), '1.234,2');
-      test.equal(formatacoes.numero(12345.2), '12.345,2');
-      test.equal(
-        formatacoes.numero(1112345.2, {
-          casasDecimais: 2,
-        }),
-        '1.112.345,20'
-      );
-      test.done();
-    },
+  t.is(
+    formatacoes.numero(1.0, {
+      casasDecimais: 2,
+    }),
+    '1,00'
+  );
 
-    // 'É possível omitir separador de milhar': function(test) {
-    //     test.equal(formatacoes.numero(1112345.2, {
-    //         separadorDeMilhar: ''
-    //     }), '1112345,20');
+  t.is(
+    formatacoes.numero(1.01, {
+      casasDecimais: 3,
+    }),
+    '1,010'
+  );
+});
 
-    //     test.done();
-    // }
-  },
+test('numero - Pocisiona separador de milhar padrão', (t) => {
+  t.is(formatacoes.numero(1234.2), '1.234,2');
+  t.is(formatacoes.numero(12345.2), '12.345,2');
+  t.is(
+    formatacoes.numero(1112345.2, {
+      casasDecimais: 2,
+    }),
+    '1.112.345,20'
+  );
+});
 
-  data: {
-    'Verifica formatação correta': function (test) {
-      const data = new Date(2014, 10, 20);
-      test.equal(formatacoes.data(data), '20/11/2014');
-      test.done();
-    },
+// data tests
+test('data - Verifica formatação correta', (t) => {
+  const data = new Date(2014, 10, 20);
+  t.is(formatacoes.data(data), '20/11/2014');
+});
 
-    'Caso não seja uma data válida retorna o que foi passado': function (test) {
-      const data = new Date('inválido');
-      test.equal(formatacoes.data(data), 'Invalid Date');
-      test.done();
-    },
-  },
+test('data - Caso não seja uma data válida retorna o que foi passado', (t) => {
+  const data = new Date('inválido');
+  const result = formatacoes.data(data);
+  t.true(result instanceof Date);
+  t.true(isNaN(result.getTime()));
+});
 
-  hora: {
-    'Verifica formatação correta': function (test) {
-      const data = new Date(2014, 10, 20, 23, 34, 45);
-      test.equal(formatacoes.hora(data), '23:34:45');
-      test.done();
-    },
+// hora tests
+test('hora - Verifica formatação correta', (t) => {
+  const data = new Date(2014, 10, 20, 23, 34, 45);
+  t.is(formatacoes.hora(data), '23:34:45');
+});
 
-    'Pode-se formatar sem os segundos': function (test) {
-      const data = new Date(2014, 10, 20, 23, 34, 45);
-      test.equal(
-        formatacoes.hora(data, {
-          comSegundos: false,
-        }),
-        '23:34'
-      );
-      test.done();
-    },
+test('hora - Pode-se formatar sem os segundos', (t) => {
+  const data = new Date(2014, 10, 20, 23, 34, 45);
+  t.is(
+    formatacoes.hora(data, {
+      comSegundos: false,
+    }),
+    '23:34'
+  );
+});
 
-    'Caso não seja uma data válida retorna o que foi passado': function (test) {
-      const data = new Date('inválido');
-      test.equal(formatacoes.hora(data), 'Invalid Date');
-      test.done();
-    },
-  },
+test('hora - Caso não seja uma data válida retorna o que foi passado', (t) => {
+  const data = new Date('inválido');
+  const result = formatacoes.hora(data);
+  t.true(result instanceof Date);
+  t.true(isNaN(result.getTime()));
+});
 
-  dataEHora: {
-    'Verifica formatação correta': function (test) {
-      const data = new Date(2014, 10, 20, 23, 34, 45);
-      test.equal(formatacoes.dataEHora(data), '20/11/2014 23:34:45');
-      test.done();
-    },
+// dataEHora tests
+test('dataEHora - Verifica formatação correta', (t) => {
+  const data = new Date(2014, 10, 20, 23, 34, 45);
+  t.is(formatacoes.dataEHora(data), '20/11/2014 23:34:45');
+});
 
-    'Caso não seja uma data válida retorna o que foi passado': function (test) {
-      const data = new Date('inválido');
-      test.equal(formatacoes.dataEHora(data), 'Invalid Date');
-      test.done();
-    },
-  },
+test('dataEHora - Caso não seja uma data válida retorna o que foi passado', (t) => {
+  const data = new Date('inválido');
+  const result = formatacoes.dataEHora(data);
+  t.true(result instanceof Date);
+  t.true(isNaN(result.getTime()));
+});
 
-  tituloDeEleitor: {
-    'Formata de acordo com a formatação impressa no título de eleitor': function (test) {
-      test.equal(formatacoes.tituloDeEleitor('273397340264'), '2733 9734 0264');
-      test.equal(formatacoes.tituloDeEleitor('\t2 7 3-39-734026-4   '), '2733 9734 0264');
-      test.done();
-    },
-  },
+// tituloDeEleitor tests
+test('tituloDeEleitor - Formata de acordo com a formatação impressa no título de eleitor', (t) => {
+  t.is(formatacoes.tituloDeEleitor('273397340264'), '2733 9734 0264');
+  t.is(formatacoes.tituloDeEleitor('\t2 7 3-39-734026-4   '), '2733 9734 0264');
+});
 
-  linhaDigitavel: {
-    'Formata a linha digitavel de um boleto se tiver 47 caracteres': function (test) {
-      const esperado = '34191.57213 89766.660164 74514.590004 6 56550000268016',
-        original = '34191572138976666016474514590004656550000268016';
+// linhaDigitavel tests
+test('linhaDigitavel - Formata a linha digitavel de um boleto se tiver 47 caracteres', (t) => {
+  const esperado = '34191.57213 89766.660164 74514.590004 6 56550000268016',
+    original = '34191572138976666016474514590004656550000268016';
 
-      test.equal(formatacoes.linhaDigitavel(original), esperado);
-      test.done();
-    },
-  },
+  t.is(formatacoes.linhaDigitavel(original), esperado);
+});
 
-  boletoBancario: {
-    'Verifica que é apenas um alias para .linhaDigitavel': function (test) {
-      const linhaDigitavel = formatacoes.linhaDigitavel.toString(),
-        boletoBancario = formatacoes.boletoBancario.toString();
+// boletoBancario tests
+test('boletoBancario - Verifica que é apenas um alias para .linhaDigitavel', (t) => {
+  const linhaDigitavel = formatacoes.linhaDigitavel.toString(),
+    boletoBancario = formatacoes.boletoBancario.toString();
 
-      test.equal(linhaDigitavel, boletoBancario);
-      test.done();
-    },
-  },
+  t.is(linhaDigitavel, boletoBancario);
+});
 
-  nit: {
-    'Verifica que é apenas um alias para .pisPasep': function (test) {
-      test.equal(formatacoes.pisPasep.toString(), formatacoes.nit.toString());
-      test.done();
-    },
-  },
+// nit tests
+test('nit - Verifica que é apenas um alias para .pisPasep', (t) => {
+  t.is(formatacoes.pisPasep.toString(), formatacoes.nit.toString());
+});
 
-  pisPasep: {
-    'Verifica que a máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.pisPasep('12541586274'), '125.4158.627-4');
-      test.equal(formatacoes.pisPasep('\t   12541586274  '), '125.4158.627-4');
-      test.done();
-    },
-  },
+// pisPasep tests
+test('pisPasep - Verifica que a máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.pisPasep('12541586274'), '125.4158.627-4');
+  t.is(formatacoes.pisPasep('\t   12541586274  '), '125.4158.627-4');
+});
 
-  cnpj: {
-    'Verifica que a máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.cnpj('18028400000170'), '18.028.400/0001-70');
-      test.equal(formatacoes.cnpj(' 18028400000170 '), '18.028.400/0001-70');
+// cnpj tests
+test('cnpj - Verifica que a máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.cnpj('18028400000170'), '18.028.400/0001-70');
+  t.is(formatacoes.cnpj(' 18028400000170 '), '18.028.400/0001-70');
+});
 
-      test.done();
-    },
+test('cnpj - Se passa algo que não era cnpj retorna o que foi passado anteriormente', (t) => {
+  t.is(formatacoes.cnpj('18028400000171'), '18028400000171');
+  t.is(formatacoes.cnpj('a8028400000170'), 'a8028400000170');
+});
 
-    'Se passa algo que não era cnpj retorna o que foi passado anteriormente': function (test) {
-      test.equal(formatacoes.cnpj('18028400000171'), '18028400000171');
-      test.equal(formatacoes.cnpj('a8028400000170'), 'a8028400000170');
+// cpf tests
+test('cpf - Verifica que a máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.cpf('93462121952'), '934.621.219-52');
+  t.is(formatacoes.cpf(' 93462121952 '), '934.621.219-52');
+});
 
-      test.done();
-    },
-  },
+test('cpf - Se passa algo que não era cpf retorna o que foi passado anteriormente', (t) => {
+  t.is(formatacoes.cnpj('foo bar'), 'foo bar');
+  t.is(formatacoes.cnpj('93462121953'), '93462121953');
+});
 
-  cpf: {
-    'Verifica que a máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.cpf('93462121952'), '934.621.219-52');
-      test.equal(formatacoes.cpf(' 93462121952 '), '934.621.219-52');
+// registroNacional tests
+test('registroNacional - Verifica que a máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.registroNacional('18028400000170'), '18.028.400/0001-70');
+  t.is(formatacoes.registroNacional(' 18028400000170 '), '18.028.400/0001-70');
 
-      test.done();
-    },
+  t.is(formatacoes.registroNacional('93462121952'), '934.621.219-52');
+  t.is(formatacoes.registroNacional(' 93462121952 '), '934.621.219-52');
+});
 
-    'Se passa algo que não era cpf retorna o que foi passado anteriormente': function (test) {
-      test.equal(formatacoes.cnpj('foo bar'), 'foo bar');
-      test.equal(formatacoes.cnpj('93462121953'), '93462121953');
+// placa tests
+test('placa - Verifica que máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.placa('abc2366'), 'ABC-2366');
+  t.is(formatacoes.placa('abc-2343'), 'ABC-2343');
+});
 
-      test.done();
-    },
-  },
+test('placa - Verifica que retorna a mesma coisa quando texto não é placa', (t) => {
+  t.is(formatacoes.placa('abcd-2366'), 'abcd-2366');
+  t.is(formatacoes.placa('foo'), 'foo');
+});
 
-  registroNacional: {
-    'Verifica que a máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.registroNacional('18028400000170'), '18.028.400/0001-70');
-      test.equal(formatacoes.registroNacional(' 18028400000170 '), '18.028.400/0001-70');
+// cep tests
+test('cep - Verifica que máscara é aplicada corretamente', (t) => {
+  t.is(formatacoes.cep('71530070'), '71.530-070');
+  t.is(formatacoes.cep('71.530070'), '71.530-070');
+  t.is(formatacoes.cep('71530-070'), '71.530-070');
+});
 
-      test.equal(formatacoes.registroNacional('93462121952'), '934.621.219-52');
-      test.equal(formatacoes.registroNacional(' 93462121952 '), '934.621.219-52');
-
-      test.done();
-    },
-  },
-
-  placa: {
-    'Verifica que máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.placa('abc2366'), 'ABC-2366');
-      test.equal(formatacoes.placa('abc-2343'), 'ABC-2343');
-
-      test.done();
-    },
-
-    'Verifica que retorna a mesma coisa quando texto não é placa': function (test) {
-      test.equal(formatacoes.placa('abcd-2366'), 'abcd-2366');
-      test.equal(formatacoes.placa('foo'), 'foo');
-
-      test.done();
-    },
-  },
-
-  cep: {
-    'Verifica que máscara é aplicada corretamente': function (test) {
-      test.equal(formatacoes.cep('71530070'), '71.530-070');
-      test.equal(formatacoes.cep('71.530070'), '71.530-070');
-      test.equal(formatacoes.cep('71530-070'), '71.530-070');
-
-      test.done();
-    },
-
-    'Verifica que retorna a mesma coisa quando texto não é cep': function (test) {
-      test.equal(formatacoes.cep('715300700'), '715300700');
-      test.equal(formatacoes.cep('foo'), 'foo');
-
-      test.done();
-    },
-  },
-};
+test('cep - Verifica que retorna a mesma coisa quando texto não é cep', (t) => {
+  t.is(formatacoes.cep('715300700'), '715300700');
+  t.is(formatacoes.cep('foo'), 'foo');
+});

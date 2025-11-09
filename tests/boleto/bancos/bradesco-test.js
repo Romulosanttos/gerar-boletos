@@ -7,134 +7,106 @@ const Datas = require('../../../lib/core/datas');
 const Endereco = require('../../../lib/core/endereco');
 const Beneficiario = require('../../../lib/core/beneficiario');
 const Pagador = require('../../../lib/core/pagador');
-
 let banco, boleto;
+const test = require('ava');
 
-module.exports = {
-  setUp: function (done) {
-    banco = new Bradesco();
+test.beforeEach((t) => {
+  banco = new Bradesco();
+  const datas = Datas.novasDatas();
+  datas.comDocumento('02-04-2020');
+  datas.comProcessamento('02-04-2020');
+  datas.comVencimento('02-04-2020');
+  const beneficiario = Beneficiario.novoBeneficiario();
+  beneficiario.comNome('Leonardo Bessa');
+  beneficiario.comRegistroNacional('73114004652');
+  beneficiario.comAgencia('2949');
+  beneficiario.comDigitoAgencia('1');
+  beneficiario.comCodigoBeneficiario('6580');
+  beneficiario.comDigitoCodigoBeneficiario('3');
+  beneficiario.comNumeroConvenio('1207113');
+  beneficiario.comCarteira('6');
+  beneficiario.comNossoNumero('3');
+  beneficiario.comDigitoNossoNumero('7');
+  const enderecoDoBeneficiario = Endereco.novoEndereco();
+  enderecoDoBeneficiario.comLogradouro('Rua da Programação');
+  enderecoDoBeneficiario.comBairro('Zona Rural');
+  enderecoDoBeneficiario.comCep('71550050');
+  enderecoDoBeneficiario.comCidade('Patos de Minas');
+  enderecoDoBeneficiario.comUf('MG');
+  beneficiario.comEndereco(enderecoDoBeneficiario);
+  const pagador = Pagador.novoPagador();
+  pagador.comNome('Fulano');
+  pagador.comRegistroNacional('97264269604');
+  const enderecoDoPagador = Endereco.novoEndereco();
+  enderecoDoPagador.comLogradouro('Avenida dos Testes Unitários');
+  enderecoDoPagador.comBairro('Barra da Tijuca');
+  enderecoDoPagador.comCep('72000000');
+  enderecoDoPagador.comCidade('Rio de Janeiro');
+  enderecoDoPagador.comUf('RJ');
+  pagador.comEndereco(enderecoDoPagador);
+  boleto = Boleto.novoBoleto();
+  boleto.comDatas(datas);
+  boleto.comBeneficiario(beneficiario);
+  boleto.comBanco(banco);
+  boleto.comPagador(pagador);
+  boleto.comValor(1);
+  boleto.comNumeroDoDocumento('4323');
+  boleto.comLocaisDePagamento([
+    'Pagável preferencialmente na rede Bradesco ou no Bradesco expresso',
+  ]);
+});
 
-    const datas = Datas.novasDatas();
+test('Nosso número formatado deve ter 11 digitos', (t) => {
+  const nossoNumero = banco.getNossoNumeroFormatado(boleto.getBeneficiario());
+  t.is(nossoNumero.length, 11);
+  t.is(nossoNumero, '00000000003');
+});
 
-    datas.comDocumento('02-04-2020');
-    datas.comProcessamento('02-04-2020');
-    datas.comVencimento('02-04-2020');
+test('Carteira formatado deve ter dois dígitos', (t) => {
+  const carteiraFormatado = banco.getCarteiraFormatado(boleto.getBeneficiario());
+  t.is(carteiraFormatado.length, 2);
+  t.is(carteiraFormatado, '06');
+});
 
-    const beneficiario = Beneficiario.novoBeneficiario();
-    beneficiario.comNome('Leonardo Bessa');
-    beneficiario.comRegistroNacional('73114004652');
-    beneficiario.comAgencia('2949');
-    beneficiario.comDigitoAgencia('1');
-    beneficiario.comCodigoBeneficiario('6580');
-    beneficiario.comDigitoCodigoBeneficiario('3');
-    beneficiario.comNumeroConvenio('1207113');
-    beneficiario.comCarteira('6');
-    beneficiario.comNossoNumero('3');
-    beneficiario.comDigitoNossoNumero('7');
+test('Conta corrente formatada deve ter sete dígitos', (t) => {
+  const codigoFormatado = banco.getCodigoFormatado(boleto.getBeneficiario());
+  t.is(codigoFormatado.length, 7);
+  t.is(codigoFormatado, '0006580');
+});
 
-    const enderecoDoBeneficiario = Endereco.novoEndereco();
-    enderecoDoBeneficiario.comLogradouro('Rua da Programação');
-    enderecoDoBeneficiario.comBairro('Zona Rural');
-    enderecoDoBeneficiario.comCep('71550050');
-    enderecoDoBeneficiario.comCidade('Patos de Minas');
-    enderecoDoBeneficiario.comUf('MG');
-    beneficiario.comEndereco(enderecoDoBeneficiario);
+test('Testa geração de linha digitavel', (t) => {
+  const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
+    linhaEsperada = '23792.94909 60000.000004 03000.658009 9 81550000000100';
+  t.is(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
+});
 
-    const pagador = Pagador.novoPagador();
-    pagador.comNome('Fulano');
-    pagador.comRegistroNacional('97264269604');
+test('Testa código de barras', (t) => {
+  const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.is(codigoDeBarras, '23799815500000001002949060000000000300065800');
+});
 
-    const enderecoDoPagador = Endereco.novoEndereco();
-    enderecoDoPagador.comLogradouro('Avenida dos Testes Unitários');
-    enderecoDoPagador.comBairro('Barra da Tijuca');
-    enderecoDoPagador.comCep('72000000');
-    enderecoDoPagador.comCidade('Rio de Janeiro');
-    enderecoDoPagador.comUf('RJ');
-    pagador.comEndereco(enderecoDoPagador);
+test('Verifica nome correto do banco', (t) => {
+  t.is(banco.getNome(), 'Banco Bradesco S.A.');
+});
 
-    boleto = Boleto.novoBoleto();
-    boleto.comDatas(datas);
-    boleto.comBeneficiario(beneficiario);
-    boleto.comBanco(banco);
-    boleto.comPagador(pagador);
-    boleto.comValor(1);
-    boleto.comNumeroDoDocumento('4323');
-    boleto.comLocaisDePagamento([
-      'Pagável preferencialmente na rede Bradesco ou no Bradesco expresso',
-    ]);
+test('Verifica a numeração correta do banco', (t) => {
+  t.is(banco.getNumeroFormatadoComDigito(), '237-2');
+});
 
-    done();
-  },
+test('Verifica que arquivo de imagem do logotipo existe', (t) => {
+  t.truthy(fs.existsSync(banco.getImagem()));
+});
 
-  'Nosso número formatado deve ter 11 digitos': function (test) {
-    const nossoNumero = banco.getNossoNumeroFormatado(boleto.getBeneficiario());
-    test.equals(11, nossoNumero.length);
-    test.equals('00000000003', nossoNumero);
+test('Verifica deve imprimir o nome do banco no boleto', (t) => {
+  t.truthy(!banco.getImprimirNome());
+});
 
-    test.done();
-  },
+test('Exibir campo CIP retorna verdadeiro', (t) => {
+  t.is(banco.exibirCampoCip(), true);
+});
 
-  'Carteira formatado deve ter dois dígitos': function (test) {
-    const carteiraFormatado = banco.getCarteiraFormatado(boleto.getBeneficiario());
-
-    test.equals(2, carteiraFormatado.length);
-    test.equals('06', carteiraFormatado);
-    test.done();
-  },
-
-  'Conta corrente formatada deve ter sete dígitos': function (test) {
-    const codigoFormatado = banco.getCodigoFormatado(boleto.getBeneficiario());
-
-    test.equals(7, codigoFormatado.length);
-    test.equals('0006580', codigoFormatado);
-    test.done();
-  },
-
-  'Testa geração de linha digitavel': function (test) {
-    const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-      linhaEsperada = '23792.94909 60000.000004 03000.658009 9 81550000000100';
-
-    test.equal(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
-    test.done();
-  },
-
-  'Testa código de barras': function (test) {
-    const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
-
-    test.equal('23799815500000001002949060000000000300065800', codigoDeBarras);
-    test.done();
-  },
-
-  'Verifica nome correto do banco': function (test) {
-    test.equals(banco.getNome(), 'Banco Bradesco S.A.');
-    test.done();
-  },
-
-  'Verifica a numeração correta do banco': function (test) {
-    test.equal(banco.getNumeroFormatadoComDigito(), '237-2');
-    test.done();
-  },
-
-  'Verifica que arquivo de imagem do logotipo existe': function (test) {
-    test.ok(fs.existsSync(banco.getImagem()));
-    test.done();
-  },
-
-  'Verifica deve imprimir o nome do banco no boleto': function (test) {
-    test.ok(!banco.getImprimirNome());
-    test.done();
-  },
-
-  'Exibir campo CIP retorna verdadeiro': function (test) {
-    test.equal(banco.exibirCampoCip(), true);
-    test.done();
-  },
-
-  'Verifica criação de pdf': function (test) {
-    new PdfGerador(boleto).pdfFile('../tests/banks/boleto-bradesco.pdf').then(async ({ path }) => {
-      test.ok(fs.existsSync(path));
-      test.equal(fs.unlinkSync(path), undefined);
-      test.done();
-    });
-  },
-};
+test('Verifica criação de pdf', async (t) => {
+  const { path } = await new PdfGerador(boleto).pdfFile('../tests/banks/boleto-bradesco.pdf');
+  t.truthy(fs.existsSync(path));
+  t.is(fs.unlinkSync(path), undefined);
+});

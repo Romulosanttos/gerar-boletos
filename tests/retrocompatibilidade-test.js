@@ -2,39 +2,34 @@
  * Testes de retrocompatibilidade da API publica
  */
 
-module.exports = {
-  'API antiga - Boletos funciona': function (test) {
-    const { Boletos } = require('../lib/index');
-    test.strictEqual(typeof Boletos, 'function');
-    test.done();
-  },
+const test = require('ava');
 
-  'API antiga - Bancos funciona': function (test) {
-    const { Bancos } = require('../lib/index');
-    test.ok(Bancos);
-    test.strictEqual(typeof Bancos.Bradesco, 'function');
-    test.done();
-  },
+test('API antiga - Boletos funciona', (t) => {
+  const { Boletos } = require('../lib/index');
+  t.is(typeof Boletos, 'function');
+});
 
-  'API nova - Banks === Bancos': function (test) {
-    const { Banks, Bancos } = require('../lib/index');
-    test.strictEqual(Banks, Bancos);
-    test.done();
-  },
+test('API antiga - Bancos funciona', (t) => {
+  const { Bancos } = require('../lib/index');
+  t.truthy(Bancos);
+  t.is(typeof Bancos.Bradesco, 'function');
+});
 
-  'API nova - Boleto === Boletos': function (test) {
-    const { Boleto, Boletos } = require('../lib/index');
-    test.strictEqual(Boleto, Boletos);
-    test.done();
-  },
+test('API nova - Banks === Bancos', (t) => {
+  const { Banks, Bancos } = require('../lib/index');
+  t.is(Banks, Bancos);
+});
 
-  'API nova - entities expoe todas entidades': function (test) {
-    const { entities } = require('../lib/index');
-    test.ok(entities.Boleto);
-    test.ok(entities.Pagador);
-    test.ok(entities.Beneficiario);
-    test.ok(entities.Datas);
-    test.ok(entities.Endereco);
-    test.done();
-  },
-};
+test('API nova - Boleto === Boletos', (t) => {
+  const { Boleto, Boletos } = require('../lib/index');
+  t.is(Boleto, Boletos);
+});
+
+test('API nova - entities expoe todas entidades', (t) => {
+  const { entities } = require('../lib/index');
+  t.truthy(entities.Boleto);
+  t.truthy(entities.Pagador);
+  t.truthy(entities.Beneficiario);
+  t.truthy(entities.Datas);
+  t.truthy(entities.Endereco);
+});
