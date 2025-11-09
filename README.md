@@ -38,7 +38,7 @@ yarn add gerar-boletos
 pnpm add gerar-boletos
 ```
 
-**Requisitos**: Node.js >= 14.0.0
+**Requisitos**: Node.js >= 16.0.0
 
 ## 📖 Uso Rápido
 

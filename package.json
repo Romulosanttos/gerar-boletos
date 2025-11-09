@@ -48,7 +48,7 @@
   },
   "license": "ISC",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "dependencies": {
     "base64-stream": "^1.0.0",

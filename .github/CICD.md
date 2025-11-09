@@ -20,7 +20,7 @@ Executado em:
 
 #### Tests
 
-- Executa testes em múltiplas versões do Node.js (14, 16, 18, 20)
+- Executa testes em múltiplas versões do Node.js (16, 18, 20)
 - Garante compatibilidade entre versões
 
 #### Coverage
