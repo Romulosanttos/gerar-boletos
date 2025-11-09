@@ -131,12 +131,12 @@ test('Carteira deve adicionar zeros à esquerda quando necessário', (t) => {
   t.is(carteira, '06');
 });
 
-test('Código formatado deve ter 7 dígitos', (t) => {
+test('Código formatado deve ter 8 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   const codigo = banco.getCodigoFormatado(beneficiario);
 
-  t.is(codigo.length, 7);
-  t.is(codigo, '0567890');
+  t.is(codigo.length, 8);
+  t.is(codigo, '00567890');
 });
 
 test('Código formatado deve adicionar zeros à esquerda', (t) => {
@@ -145,8 +145,8 @@ test('Código formatado deve adicionar zeros à esquerda', (t) => {
 
   const codigo = banco.getCodigoFormatado(beneficiario);
 
-  t.is(codigo.length, 7);
-  t.is(codigo, '0000123');
+  t.is(codigo.length, 8);
+  t.is(codigo, '00000123');
 });
 
 test('Nosso número formatado deve ter 17 dígitos', (t) => {
@@ -188,7 +188,7 @@ test('Agência e código beneficiário deve incluir dígito verificador', (t) =>
   t.truthy(agenciaCodigo);
   t.true(agenciaCodigo.includes('1234')); // Agência
   t.true(agenciaCodigo.includes('/'));
-  t.is(agenciaCodigo, '1234/0567890-1');
+  t.is(agenciaCodigo, '1234/00567890-1');
 });
 
 test('Agência e código beneficiário sem dígito da conta', (t) => {
@@ -200,7 +200,7 @@ test('Agência e código beneficiário sem dígito da conta', (t) => {
 
   t.truthy(agenciaCodigo);
   t.true(agenciaCodigo.includes('1234'));
-  t.is(agenciaCodigo, '1234/0567890');
+  t.is(agenciaCodigo, '1234/00567890');
 });
 
 test('Agência e código beneficiário sem dígito null', (t) => {
@@ -211,7 +211,7 @@ test('Agência e código beneficiário sem dígito null', (t) => {
   const agenciaCodigo = banco.getAgenciaECodigoBeneficiario(boleto);
 
   t.truthy(agenciaCodigo);
-  t.is(agenciaCodigo, '1234/0567890');
+  t.is(agenciaCodigo, '1234/00567890');
 });
 
 // ===========================
@@ -234,20 +234,17 @@ test('Deve retornar títulos corretos', (t) => {
 // Testes de geração de código de barras
 // ===========================
 
-test('Deve gerar código de barras com nosso número de 11 dígitos (pode falhar validação)', (t) => {
+test('Deve gerar código de barras com nosso número de 11 dígitos corretamente', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('12345678901'); // 11 dígitos
   beneficiario.comAgencia('1234');
   beneficiario.comCodigoBeneficiario('567890');
 
-  // BB com 11 dígitos pode gerar código de barras inválido (não tem 44 dígitos)
-  // Este teste documenta o comportamento atual
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  });
+  // Agora com conta de 8 dígitos, o campo livre terá 25 posições corretas
+  // Campo livre: nossoNumero(11) + agencia(4) + conta(8) + carteira(2) = 25
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
 
-  t.truthy(error);
-  t.true(error.message.includes('44'));
+  t.truthy(codigoBarras);
 });
 
 test('Deve gerar código de barras com nosso número de 17 dígitos', (t) => {
@@ -260,19 +257,17 @@ test('Deve gerar código de barras com nosso número de 17 dígitos', (t) => {
   t.truthy(codigoBarras);
 });
 
-test('Campo livre com 11 dígitos (comportamento limitado do BB)', (t) => {
+test('Campo livre com 11 dígitos gera 25 posições corretas', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('12345678901'); // 11 dígitos
   beneficiario.comAgencia('1234');
-  beneficiario.comCodigoBeneficiario('567890');
+  beneficiario.comCodigoBeneficiario('567890'); // Será formatado para 8 dígitos
   beneficiario.comCarteira('18');
 
-  // BB com 11 dígitos não gera código válido
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  });
+  // Com conta de 8 dígitos: nosso(11) + agencia(4) + conta(8) + carteira(2) = 25
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
 
-  t.truthy(error);
+  t.truthy(codigoBarras);
 });
 
 test('Campo livre com 17 dígitos inclui zeros e nosso número', (t) => {
@@ -295,18 +290,16 @@ test('Deve usar substring da carteira nos 2 primeiros caracteres', (t) => {
   t.truthy(codigoBarras);
 });
 
-test('Código de barras com nosso número exatamente 11 dígitos (espera erro)', (t) => {
+test('Código de barras com nosso número exatamente 11 dígitos gera código válido', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('99999999999'); // Exatamente 11
   beneficiario.comAgencia('1234');
   beneficiario.comCodigoBeneficiario('567890');
 
-  // BB com 11 dígitos não gera código válido
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  });
+  // Com conta de 8 dígitos, agora funciona corretamente
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
 
-  t.truthy(error);
+  t.truthy(codigoBarras);
 });
 
 test('Código de barras com nosso número exatamente 17 dígitos', (t) => {
@@ -406,7 +399,7 @@ test('Deve lidar com código beneficiário pequeno', (t) => {
 
   const codigo = banco.getCodigoFormatado(beneficiario);
 
-  t.is(codigo, '0000001');
+  t.is(codigo, '00000001');
 });
 
 test('Deve formatar nosso número muito pequeno', (t) => {
@@ -418,3 +411,129 @@ test('Deve formatar nosso número muito pequeno', (t) => {
   t.is(nossoNumero.length, 17);
   t.is(nossoNumero, '00000000000000001');
 });
+
+// ===========================
+// Testes de validação de convênio
+// ===========================
+
+test('Deve aceitar convênio de 4 dígitos com nosso número de 11 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('1234');
+  beneficiario.comNossoNumero('12345678901'); // 11 dígitos
+  beneficiario.comCarteira('18');
+
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar convênio de 6 dígitos com nosso número de 11 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('123456');
+  beneficiario.comNossoNumero('12345678901'); // 11 dígitos
+  beneficiario.comCarteira('18');
+
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar convênio de 7 dígitos com nosso número de 17 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('1234567');
+  beneficiario.comNossoNumero('12345678901234567'); // 17 dígitos
+  beneficiario.comCarteira('18');
+
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar carteira 21 com convênio de 6 dígitos e nosso número de 17 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('123456');
+  beneficiario.comNossoNumero('12345678901234567'); // 17 dígitos
+  beneficiario.comCarteira('21'); // Carteira especial
+
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve rejeitar convênio com 5 dígitos (inválido)', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('12345'); // 5 dígitos - inválido!
+  beneficiario.comNossoNumero('12345678901');
+  beneficiario.comCarteira('18');
+
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+
+  t.true(error.message.includes('Convênio deve ter 4, 6 ou 7 dígitos'));
+  t.true(error.message.includes('5 dígitos'));
+});
+
+test('Deve rejeitar convênio com 8 dígitos (inválido)', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('12345678'); // 8 dígitos - inválido!
+  beneficiario.comNossoNumero('12345678901');
+  beneficiario.comCarteira('18');
+
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+
+  t.true(error.message.includes('Convênio deve ter 4, 6 ou 7 dígitos'));
+  t.true(error.message.includes('8 dígitos'));
+});
+
+test('Deve rejeitar convênio de 7 dígitos com nosso número de 11 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('1234567');
+  beneficiario.comNossoNumero('12345678901'); // 11 dígitos - deveria ser 17!
+  beneficiario.comCarteira('18');
+
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+
+  t.true(error.message.includes('Convênio de 7 dígitos requer nosso número de 17 dígitos'));
+  t.true(error.message.includes('11 dígitos'));
+});
+
+test('Deve rejeitar convênio de 4 dígitos com nosso número de 17 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('1234');
+  beneficiario.comNossoNumero('12345678901234567'); // 17 dígitos - deveria ser 11!
+  beneficiario.comCarteira('18');
+
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+
+  t.true(error.message.includes('Convênio de 4 dígitos requer nosso número de 11 dígitos'));
+  t.true(error.message.includes('17 dígitos'));
+});
+
+test('Deve rejeitar carteira 21 com convênio de 6 dígitos e nosso número de 11 dígitos', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comNumeroConvenio('123456');
+  beneficiario.comNossoNumero('12345678901'); // 11 dígitos - carteira 21 precisa de 17!
+  beneficiario.comCarteira('21');
+
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+
+  t.true(error.message.includes('Carteira 21 com convênio de 6 dígitos'));
+  t.true(error.message.includes('17 dígitos'));
+  t.true(error.message.includes('11 dígitos'));
+});
+
+test('Deve aceitar boleto sem convênio (retrocompatibilidade)', (t) => {
+  const beneficiario = boleto.getBeneficiario();
+  // Sem chamar comNumeroConvenio() - deve funcionar
+  beneficiario.comNossoNumero('12345678901');
+  beneficiario.comCarteira('18');
+
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+

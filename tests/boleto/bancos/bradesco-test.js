@@ -32,7 +32,7 @@ test.beforeEach((t) => {
   beneficiario.comCodigoBeneficiario('6580');
   beneficiario.comDigitoCodigoBeneficiario('3');
   beneficiario.comNumeroConvenio('1207113');
-  beneficiario.comCarteira('6');
+  beneficiario.comCarteira('06'); // Carteira Bradesco deve ter 2 dígitos
   beneficiario.comNossoNumero('3');
   beneficiario.comDigitoNossoNumero('7');
   const enderecoDoBeneficiario = Endereco.novoEndereco();
@@ -113,6 +113,7 @@ test('Exibir campo CIP retorna verdadeiro', (t) => {
   t.is(banco.exibirCampoCip(), true);
 });
 
+
 test('Verifica criação de pdf', async (t) => {
   const dir = path.join('tmp', 'boletos');
   try {
@@ -130,3 +131,61 @@ test('Verifica criação de pdf', async (t) => {
   }
   t.pass();
 });
+
+// ===== TESTES DE VALIDAÇÃO DE CARTEIRA =====
+
+test('Deve aceitar carteira 06 (válida)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('06');
+  beneficiario.comNossoNumero('12345678901');
+  
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar carteira 09 (válida)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('09');
+  beneficiario.comNossoNumero('12345678901');
+  
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve rejeitar carteira inválida (99)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('99');
+  beneficiario.comNossoNumero('12345678901');
+  
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Carteira inválida'));
+  t.true(error.message.includes('Bradesco'));
+});
+
+// ===== TESTES DE VALIDAÇÃO DE NOSSO NÚMERO =====
+
+test('Deve rejeitar nosso número com mais de 11 dígitos', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('06');
+  beneficiario.comNossoNumero('123456789012'); // 12 dígitos
+  
+  const error = t.throws(() => {
+    banco.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Nosso número deve ter até 11 dígitos'));
+  t.true(error.message.includes('12 dígitos'));
+});
+
+test('Deve aceitar nosso número com 11 dígitos exatos', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('06');
+  beneficiario.comNossoNumero('12345678901');
+  
+  const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+

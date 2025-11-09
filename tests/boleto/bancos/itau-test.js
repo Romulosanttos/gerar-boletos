@@ -65,9 +65,10 @@ test('Conta corrente formatada deve ter cinco dígitos', (t) => {
 });
 
 test('Verifica geração da linha digitável - 1', (t) => {
-  // Teste seguindo especificação SISPAG CNAB-85 com campo livre de 25 posições
+  // Implementação correta seguindo especificação Itaú
+  // DV calculado com Agência + Conta + Carteira + Nosso Número (MOD10)
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    linhaEsperada = '34191.57213 89766.680162 74514.590004 3 56550000268016';
+    linhaEsperada = '34191.57213 89766.660164 74514.590004 6 56550000268016';
   t.is(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 });
 
@@ -94,8 +95,8 @@ test('Verifica geração da linha digitável - 2', (t) => {
   boleto.comNumeroDoDocumento('575');
   boleto.comBanco(banco);
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    // Linha digitável conforme SISPAG CNAB-85
-    linhaEsperada = '34191.74002 01513.508463 20582.590004 4 60290000268016';
+    // DV calculado com Agência + Conta + Carteira + Nosso Número (MOD10)
+    linhaEsperada = '34191.74002 01513.568467 20582.590004 6 60290000268016';
   t.is(linhaEsperada, geradorDeLinhaDigitavel(codigoDeBarras, banco));
 });
 
@@ -121,7 +122,7 @@ test('Verifica geração da linha digitável - 3', (t) => {
   boleto.comNumeroDoDocumento('1');
   boleto.comBanco(banco);
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    linhaEsperada = '34191.81940 58802.170652 40871.130007 5 60700000057500',
+    linhaEsperada = '34191.81940 58802.140655 40871.130007 4 60700000057500',
     linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
   t.is(linhaEsperada, linhaGerada);
 });
@@ -148,7 +149,7 @@ test('Verifica geração da linha digitável - 4', (t) => {
   boleto.comNumeroDoDocumento('2');
   boleto.comBanco(banco);
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    linhaEsperada = '34191.57890 60507.450652 40871.130007 1 61030000011538',
+    linhaEsperada = '34191.57890 60507.420655 40871.130007 1 61030000011538',
     linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
   t.is(linhaEsperada, linhaGerada);
 });
@@ -175,7 +176,7 @@ test('Verifica geração da linha digitável - 5', (t) => {
   boleto.comNumeroDoDocumento('4');
   boleto.comBanco(banco);
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    linhaEsperada = '34191.57023 89162.010659 40871.130007 9 61680000011538',
+    linhaEsperada = '34191.57023 89162.080652 40871.130007 4 61680000011538',
     linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
   t.is(linhaEsperada, linhaGerada);
 });
@@ -202,7 +203,7 @@ test('Verifica geração da linha digitável - 6', (t) => {
   boleto.comNumeroDoDocumento('5');
   boleto.comBanco(banco);
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto),
-    linhaEsperada = '34191.57072 96777.770650 40871.130007 1 61980000023076',
+    linhaEsperada = '34191.57072 96777.740653 40871.130007 9 61980000023076',
     linhaGerada = geradorDeLinhaDigitavel(codigoDeBarras, banco);
   t.is(linhaEsperada, linhaGerada);
 });
@@ -221,8 +222,8 @@ test('Verifica deve imprimir o nome do banco no boleto', (t) => {
 
 test('Verifica geração do código de barras', (t) => {
   const codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
-  // Código de barras conforme especificação SISPAG CNAB-85
-  t.is(codigoDeBarras, '34191619800000230761570796777770654087113000');
+  // Código de barras com DV correto (usa boleto modificado do teste anterior)
+  t.is(codigoDeBarras, '34199619800000230761570796777740654087113000');
 });
 
 test('Verifica que arquivo de imagem do logotipo existe', (t) => {

@@ -90,13 +90,13 @@ test('Deve retornar false para exibir campo CIP', t => {
 
 // ===== TESTES DE FORMATAÇÃO =====
 
-test('Deve formatar a carteira com 2 dígitos', t => {
+test('Deve formatar a carteira com 3 dígitos', t => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('5');
-  t.is(santander.getCarteiraFormatado(beneficiario), '05');
+  t.is(santander.getCarteiraFormatado(beneficiario), '005');
 });
 
-test('Deve formatar a carteira com 3 dígitos (deve truncar para 2)', t => {
+test('Deve formatar a carteira com 3 dígitos completos', t => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   t.is(santander.getCarteiraFormatado(beneficiario), '101');
@@ -233,7 +233,7 @@ test('Deve formatar nosso número com valor vazio', t => {
 test('Deve formatar carteira com valor vazio', t => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('');
-  t.is(santander.getCarteiraFormatado(beneficiario), '00');
+  t.is(santander.getCarteiraFormatado(beneficiario), '000');
 });
 
 test('Deve lidar com valores numéricos pequenos no código', t => {
@@ -251,7 +251,7 @@ test('Deve lidar com valores numéricos pequenos no nosso número', t => {
 test('Deve lidar com valores numéricos pequenos na carteira', t => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('1');
-  t.is(santander.getCarteiraFormatado(beneficiario), '01');
+  t.is(santander.getCarteiraFormatado(beneficiario), '001');
 });
 
 // ===== TESTE DO FACTORY METHOD =====
@@ -262,3 +262,103 @@ test('Deve criar instância usando método estático', t => {
   t.true(novoSantander instanceof Santander);
   t.is(novoSantander.getNome(), 'Banco Santander S.A.');
 });
+
+// ===== TESTES DE VALIDAÇÃO DE CARTEIRA =====
+
+test('Deve aceitar carteira 101 (válida)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('101');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar carteira 102 (válida)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('102');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar carteira 201 (válida)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('201');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve rejeitar carteira inválida (103)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('103');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const error = t.throws(() => {
+    santander.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Carteira inválida'));
+  t.true(error.message.includes('101, 102, 201'));
+});
+
+test('Deve rejeitar carteira vazia', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const error = t.throws(() => {
+    santander.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Carteira inválida'));
+});
+
+// ===== TESTES DE VALIDAÇÃO DE NOSSO NÚMERO =====
+
+test('Deve rejeitar nosso número com mais de 12 dígitos', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('101');
+  beneficiario.comNossoNumero('1234567890123'); // 13 dígitos
+  
+  const error = t.throws(() => {
+    santander.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Nosso número deve ter até 12 dígitos'));
+  t.true(error.message.includes('13 dígitos'));
+});
+
+test('Deve rejeitar nosso número vazio', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('101');
+  beneficiario.comNossoNumero('');
+  
+  const error = t.throws(() => {
+    santander.geraCodigoDeBarrasPara(boleto);
+  }, {instanceOf: Error});
+  
+  t.true(error.message.includes('Nosso número deve ter até 12 dígitos'));
+});
+
+test('Deve aceitar nosso número com 12 dígitos exatos', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('101');
+  beneficiario.comNossoNumero('123456789012');
+  
+  const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
+test('Deve aceitar nosso número com menos de 12 dígitos (com padding)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  beneficiario.comCarteira('101');
+  beneficiario.comNossoNumero('12345'); // Será formatado para 000000012345
+  
+  const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoBarras);
+});
+
