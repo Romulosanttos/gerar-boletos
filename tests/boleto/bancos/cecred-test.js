@@ -17,7 +17,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   banco = new Cecred();
 
   const datas = Datas.novasDatas();

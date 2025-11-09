@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const Boleto = require('../../../lib/core/boleto');
 const Sicoob = require('../../../lib/banks/sicoob');
-const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
 const Datas = require('../../../lib/core/datas');
 const Endereco = require('../../../lib/core/endereco');
 const Beneficiario = require('../../../lib/core/beneficiario');
@@ -18,7 +17,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   const datas = Datas.novasDatas();
   datas.comDocumento('02-01-2016');
   datas.comProcessamento('02-01-2016');
@@ -26,7 +25,7 @@ test.beforeEach((t) => {
   const pagador = Pagador.novoPagador();
   pagador.comNome('BASILIO ANTONIO CAMPANHOLO');
   pagador.comRegistroNacional('26018683172');
-  beneficiario = Beneficiario.novoBeneficiario();
+  const beneficiario = Beneficiario.novoBeneficiario();
   beneficiario.comNome('GREENSTONE DES. E PROC. DE DADOS MINERAIS LTDA ME');
   beneficiario.comRegistroNacional('21202793000100');
   beneficiario.comAgencia('4155');

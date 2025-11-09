@@ -53,86 +53,86 @@ test.beforeEach(() => {
   boleto.comBanco(santander);
   boleto.comBeneficiario(beneficiario);
   boleto.comPagador(pagador);
-  boleto.comValor(1000.00);
+  boleto.comValor(1000.0);
   boleto.comNumeroDoDocumento('12345');
 });
 
 // ===== TESTES BÁSICOS =====
 
-test('Deve retornar o número do banco formatado', t => {
+test('Deve retornar o número do banco formatado', (t) => {
   t.is(santander.getNumeroFormatado(), '033');
 });
 
-test('Deve retornar o número do banco formatado com dígito', t => {
+test('Deve retornar o número do banco formatado com dígito', (t) => {
   t.is(santander.getNumeroFormatadoComDigito(), '033-7');
 });
 
-test('Deve retornar o nome do banco', t => {
+test('Deve retornar o nome do banco', (t) => {
   t.is(santander.getNome(), 'Banco Santander S.A.');
 });
 
-test('Deve retornar o caminho da imagem', t => {
+test('Deve retornar o caminho da imagem', (t) => {
   const imagem = santander.getImagem();
   t.true(imagem.includes('logotipos/santander.png'));
 });
 
-test('Deve retornar false para imprimir nome', t => {
+test('Deve retornar false para imprimir nome', (t) => {
   t.false(santander.getImprimirNome());
 });
 
-test('Deve retornar true para exibir recibo do pagador completo', t => {
+test('Deve retornar true para exibir recibo do pagador completo', (t) => {
   t.true(santander.exibirReciboDoPagadorCompleto());
 });
 
-test('Deve retornar false para exibir campo CIP', t => {
+test('Deve retornar false para exibir campo CIP', (t) => {
   t.false(santander.exibirCampoCip());
 });
 
 // ===== TESTES DE FORMATAÇÃO =====
 
-test('Deve formatar a carteira com 3 dígitos', t => {
+test('Deve formatar a carteira com 3 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('5');
   t.is(santander.getCarteiraFormatado(beneficiario), '005');
 });
 
-test('Deve formatar a carteira com 3 dígitos completos', t => {
+test('Deve formatar a carteira com 3 dígitos completos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   t.is(santander.getCarteiraFormatado(beneficiario), '101');
 });
 
-test('Deve retornar o texto da carteira formatado', t => {
+test('Deve retornar o texto da carteira formatado', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   t.is(santander.getCarteiraTexto(beneficiario), '101');
 });
 
-test('Deve formatar o código do beneficiário com 7 dígitos', t => {
+test('Deve formatar o código do beneficiário com 7 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCodigoBeneficiario('0012345');
   t.is(santander.getCodigoFormatado(beneficiario), '0012345');
 });
 
-test('Deve formatar o código do beneficiário com padding de zeros', t => {
+test('Deve formatar o código do beneficiário com padding de zeros', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCodigoBeneficiario('1');
   t.is(santander.getCodigoFormatado(beneficiario), '0000001');
 });
 
-test('Deve formatar o nosso número com 12 dígitos', t => {
+test('Deve formatar o nosso número com 12 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('123456');
   t.is(santander.getNossoNumeroFormatado(beneficiario), '000000123456');
 });
 
-test('Deve formatar o nosso número com padding de zeros', t => {
+test('Deve formatar o nosso número com padding de zeros', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('1');
   t.is(santander.getNossoNumeroFormatado(beneficiario), '000000000001');
 });
 
-test('Deve retornar nosso número e código documento formatado com dígito', t => {
+test('Deve retornar nosso número e código documento formatado com dígito', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('123456789012');
   beneficiario.comDigitoNossoNumero('4');
@@ -140,7 +140,7 @@ test('Deve retornar nosso número e código documento formatado com dígito', t 
   t.is(resultado, '123456789012-4');
 });
 
-test('Deve retornar agência e código do beneficiário formatado', t => {
+test('Deve retornar agência e código do beneficiário formatado', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comAgencia('1234');
   beneficiario.comDigitoAgencia('5');
@@ -150,7 +150,7 @@ test('Deve retornar agência e código do beneficiário formatado', t => {
   t.is(resultado, '1234/0012345-8'); // Santander não usa dígito da agência neste método
 });
 
-test('Deve retornar agência e código do beneficiário sem dígito do código', t => {
+test('Deve retornar agência e código do beneficiário sem dígito do código', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comAgencia('1234');
   beneficiario.comDigitoAgencia('5');
@@ -160,7 +160,7 @@ test('Deve retornar agência e código do beneficiário sem dígito do código',
   t.is(resultado, '1234/0012345'); // Sem dígito do código
 });
 
-test('Deve retornar agência e código do beneficiário com dígito do código', t => {
+test('Deve retornar agência e código do beneficiário com dígito do código', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comAgencia('1234');
   beneficiario.comDigitoAgencia('5');
@@ -172,7 +172,7 @@ test('Deve retornar agência e código do beneficiário com dígito do código',
 
 // ===== TESTES DE TÍTULOS =====
 
-test('Deve retornar os títulos corretos', t => {
+test('Deve retornar os títulos corretos', (t) => {
   const titulos = santander.getTitulos();
   t.is(titulos.instrucoes, 'Informações de responsabilidade do beneficiário');
   t.is(titulos.nomeDoPagador, 'Nome do Pagador');
@@ -184,7 +184,7 @@ test('Deve retornar os títulos corretos', t => {
 
 // ===== TESTES DE CÓDIGO DE BARRAS =====
 
-test('Deve gerar código de barras válido com Santander', t => {
+test('Deve gerar código de barras válido com Santander', (t) => {
   const beneficiario = boleto.getBeneficiario();
   // Santander precisa do código beneficiário com exatamente 7 dígitos para substring funcionar
   beneficiario.comCodigoBeneficiario('0012345'); // 7 dígitos
@@ -194,13 +194,13 @@ test('Deve gerar código de barras válido com Santander', t => {
 
   const codigoDeBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoDeBarras);
-  
+
   // Verifica que o código de barras não é vazio
   const codigoString = codigoDeBarras.toString();
   t.true(codigoString.length > 0);
 });
 
-test('Deve gerar código de barras com código beneficiário menor (fix do bug)', t => {
+test('Deve gerar código de barras com código beneficiário menor (fix do bug)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   // BUG FIX: Agora aceita código com menos de 7 dígitos (será formatado com padding)
   beneficiario.comCodigoBeneficiario('123'); // 3 dígitos - será formatado para 0000123
@@ -210,7 +210,7 @@ test('Deve gerar código de barras com código beneficiário menor (fix do bug)'
 
   const codigoDeBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoDeBarras);
-  
+
   // Deve gerar código válido mesmo com código beneficiário curto
   const codigoString = codigoDeBarras.toString();
   t.true(codigoString.length > 0);
@@ -218,37 +218,37 @@ test('Deve gerar código de barras com código beneficiário menor (fix do bug)'
 
 // ===== TESTES DE EDGE CASES =====
 
-test('Deve formatar código do beneficiário com valor vazio', t => {
+test('Deve formatar código do beneficiário com valor vazio', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCodigoBeneficiario('');
   t.is(santander.getCodigoFormatado(beneficiario), '0000000');
 });
 
-test('Deve formatar nosso número com valor vazio', t => {
+test('Deve formatar nosso número com valor vazio', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('');
   t.is(santander.getNossoNumeroFormatado(beneficiario), '000000000000');
 });
 
-test('Deve formatar carteira com valor vazio', t => {
+test('Deve formatar carteira com valor vazio', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('');
   t.is(santander.getCarteiraFormatado(beneficiario), '000');
 });
 
-test('Deve lidar com valores numéricos pequenos no código', t => {
+test('Deve lidar com valores numéricos pequenos no código', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCodigoBeneficiario('1');
   t.is(santander.getCodigoFormatado(beneficiario), '0000001');
 });
 
-test('Deve lidar com valores numéricos pequenos no nosso número', t => {
+test('Deve lidar com valores numéricos pequenos no nosso número', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comNossoNumero('1');
   t.is(santander.getNossoNumeroFormatado(beneficiario), '000000000001');
 });
 
-test('Deve lidar com valores numéricos pequenos na carteira', t => {
+test('Deve lidar com valores numéricos pequenos na carteira', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('1');
   t.is(santander.getCarteiraFormatado(beneficiario), '001');
@@ -256,7 +256,7 @@ test('Deve lidar com valores numéricos pequenos na carteira', t => {
 
 // ===== TESTE DO FACTORY METHOD =====
 
-test('Deve criar instância usando método estático', t => {
+test('Deve criar instância usando método estático', (t) => {
   const novoSantander = Santander.novoSantander();
   t.truthy(novoSantander);
   t.true(novoSantander instanceof Santander);
@@ -265,100 +265,96 @@ test('Deve criar instância usando método estático', t => {
 
 // ===== TESTES DE VALIDAÇÃO DE CARTEIRA =====
 
-test('Deve aceitar carteira 101 (válida)', t => {
+test('Deve aceitar carteira 101 (válida)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   beneficiario.comNossoNumero('123456789012');
-  
+
   const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve aceitar carteira 102 (válida)', t => {
+test('Deve aceitar carteira 102 (válida)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('102');
   beneficiario.comNossoNumero('123456789012');
-  
+
   const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve aceitar carteira 201 (válida)', t => {
+test('Deve aceitar carteira 201 (válida)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('201');
   beneficiario.comNossoNumero('123456789012');
-  
+
   const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve rejeitar carteira inválida (103)', t => {
+test('Deve rejeitar carteira inválida (103)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('103');
   beneficiario.comNossoNumero('123456789012');
-  
-  const error = t.throws(() => {
-    santander.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
+
+  const error = t.throws(
+    () => {
+      santander.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
+
   t.true(error.message.includes('Carteira inválida'));
   t.true(error.message.includes('101, 102, 201'));
 });
 
-test('Deve rejeitar carteira vazia', t => {
+test('Deve rejeitar carteira vazia', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('');
   beneficiario.comNossoNumero('123456789012');
-  
-  const error = t.throws(() => {
-    santander.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
+
+  const error = t.throws(
+    () => {
+      santander.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
+
   t.true(error.message.includes('Carteira inválida'));
 });
 
 // ===== TESTES DE VALIDAÇÃO DE NOSSO NÚMERO =====
 
-test('Deve rejeitar nosso número com mais de 12 dígitos', t => {
+test('Deve rejeitar nosso número com mais de 12 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   beneficiario.comNossoNumero('1234567890123'); // 13 dígitos
-  
-  const error = t.throws(() => {
-    santander.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
+
+  const error = t.throws(
+    () => {
+      santander.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
+
   t.true(error.message.includes('Nosso número deve ter até 12 dígitos'));
   t.true(error.message.includes('13 dígitos'));
 });
 
-test('Deve rejeitar nosso número vazio', t => {
-  const beneficiario = boleto.getBeneficiario();
-  beneficiario.comCarteira('101');
-  beneficiario.comNossoNumero('');
-  
-  const error = t.throws(() => {
-    santander.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
-  t.true(error.message.includes('Nosso número deve ter até 12 dígitos'));
-});
-
-test('Deve aceitar nosso número com 12 dígitos exatos', t => {
+test('Deve aceitar nosso número com 12 dígitos exatos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   beneficiario.comNossoNumero('123456789012');
-  
+
   const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve aceitar nosso número com menos de 12 dígitos (com padding)', t => {
+test('Deve aceitar nosso número com menos de 12 dígitos (com padding)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('101');
   beneficiario.comNossoNumero('12345'); // Será formatado para 000000012345
-  
+
   const codigoBarras = santander.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
-

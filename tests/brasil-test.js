@@ -1,10 +1,5 @@
 const test = require('ava');
-const fs = require('fs');
-const path = require('path');
 const utils = require('../lib/index');
-
-const existsSync =
-  process.version.indexOf('v0.6') !== -1 ? require('path').existsSync : fs.existsSync;
 
 // Basic test to ensure the main module exports something
 test('Verifica que o módulo principal está disponível', (t) => {

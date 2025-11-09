@@ -17,7 +17,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   banco = new BancoBrasil();
 
   const datas = Datas.novasDatas();
@@ -171,7 +171,7 @@ test('Nosso número e código documento deve estar correto', (t) => {
   const beneficiario = boleto.getBeneficiario();
   // Importante: o getNossoNumeroFormatado pega do beneficiário atual
   beneficiario.comNossoNumero('123');
-  
+
   const formatado = banco.getNossoNumeroECodigoDocumento(boleto);
 
   t.truthy(formatado);
@@ -182,7 +182,7 @@ test('Agência e código beneficiário deve incluir dígito verificador', (t) =>
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCodigoBeneficiario('567890');
   beneficiario.comDigitoCodigoBeneficiario('1');
-  
+
   const agenciaCodigo = banco.getAgenciaECodigoBeneficiario(boleto);
 
   t.truthy(agenciaCodigo);
@@ -462,9 +462,12 @@ test('Deve rejeitar convênio com 5 dígitos (inválido)', (t) => {
   beneficiario.comNossoNumero('12345678901');
   beneficiario.comCarteira('18');
 
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
 
   t.true(error.message.includes('Convênio deve ter 4, 6 ou 7 dígitos'));
   t.true(error.message.includes('5 dígitos'));
@@ -476,9 +479,12 @@ test('Deve rejeitar convênio com 8 dígitos (inválido)', (t) => {
   beneficiario.comNossoNumero('12345678901');
   beneficiario.comCarteira('18');
 
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
 
   t.true(error.message.includes('Convênio deve ter 4, 6 ou 7 dígitos'));
   t.true(error.message.includes('8 dígitos'));
@@ -490,9 +496,12 @@ test('Deve rejeitar convênio de 7 dígitos com nosso número de 11 dígitos', (
   beneficiario.comNossoNumero('12345678901'); // 11 dígitos - deveria ser 17!
   beneficiario.comCarteira('18');
 
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
 
   t.true(error.message.includes('Convênio de 7 dígitos requer nosso número de 17 dígitos'));
   t.true(error.message.includes('11 dígitos'));
@@ -504,9 +513,12 @@ test('Deve rejeitar convênio de 4 dígitos com nosso número de 17 dígitos', (
   beneficiario.comNossoNumero('12345678901234567'); // 17 dígitos - deveria ser 11!
   beneficiario.comCarteira('18');
 
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
 
   t.true(error.message.includes('Convênio de 4 dígitos requer nosso número de 11 dígitos'));
   t.true(error.message.includes('17 dígitos'));
@@ -518,9 +530,12 @@ test('Deve rejeitar carteira 21 com convênio de 6 dígitos e nosso número de 1
   beneficiario.comNossoNumero('12345678901'); // 11 dígitos - carteira 21 precisa de 17!
   beneficiario.comCarteira('21');
 
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
 
   t.true(error.message.includes('Carteira 21 com convênio de 6 dígitos'));
   t.true(error.message.includes('17 dígitos'));
@@ -536,4 +551,3 @@ test('Deve aceitar boleto sem convênio (retrocompatibilidade)', (t) => {
   const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
-

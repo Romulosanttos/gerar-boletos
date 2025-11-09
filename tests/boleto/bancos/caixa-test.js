@@ -18,7 +18,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   banco = new Caixa();
   // SINCO
   const datas = Datas.novasDatas();
@@ -337,7 +337,7 @@ test('Verifica que arquivo de imagem do logotipo existe', (t) => {
 // });
 
 // Teste originalmente comentado - inativo no nodeunit
-// This test was commented in original - uses undefined 'boleto' variable  
+// This test was commented in original - uses undefined 'boleto' variable
 // test('Verifica geração do código de barras', (t) => {
 //   var codigoDeBarras = banco.geraCodigoDeBarrasPara(boleto);
 //   t.is(codigoDeBarras, '34196565500002680161572189766660167451459000');

@@ -18,7 +18,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   const datas = Datas.novasDatas();
   datas.comDocumento('03-20-2013');
   datas.comProcessamento('03-20-2013');

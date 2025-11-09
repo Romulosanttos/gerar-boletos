@@ -18,7 +18,7 @@ test.before(() => {
   }
 });
 
-test.beforeEach((t) => {
+test.beforeEach((_t) => {
   banco = new Bradesco();
   const datas = Datas.novasDatas();
   datas.comDocumento('02-04-2020');
@@ -113,7 +113,6 @@ test('Exibir campo CIP retorna verdadeiro', (t) => {
   t.is(banco.exibirCampoCip(), true);
 });
 
-
 test('Verifica criação de pdf', async (t) => {
   const dir = path.join('tmp', 'boletos');
   try {
@@ -134,58 +133,63 @@ test('Verifica criação de pdf', async (t) => {
 
 // ===== TESTES DE VALIDAÇÃO DE CARTEIRA =====
 
-test('Deve aceitar carteira 06 (válida)', t => {
+test('Deve aceitar carteira 06 (válida)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('06');
   beneficiario.comNossoNumero('12345678901');
-  
+
   const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve aceitar carteira 09 (válida)', t => {
+test('Deve aceitar carteira 09 (válida)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('09');
   beneficiario.comNossoNumero('12345678901');
-  
+
   const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
 
-test('Deve rejeitar carteira inválida (99)', t => {
+test('Deve rejeitar carteira inválida (99)', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('99');
   beneficiario.comNossoNumero('12345678901');
-  
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
+
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
+
   t.true(error.message.includes('Carteira inválida'));
   t.true(error.message.includes('Bradesco'));
 });
 
 // ===== TESTES DE VALIDAÇÃO DE NOSSO NÚMERO =====
 
-test('Deve rejeitar nosso número com mais de 11 dígitos', t => {
+test('Deve rejeitar nosso número com mais de 11 dígitos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('06');
   beneficiario.comNossoNumero('123456789012'); // 12 dígitos
-  
-  const error = t.throws(() => {
-    banco.geraCodigoDeBarrasPara(boleto);
-  }, {instanceOf: Error});
-  
+
+  const error = t.throws(
+    () => {
+      banco.geraCodigoDeBarrasPara(boleto);
+    },
+    { instanceOf: Error }
+  );
+
   t.true(error.message.includes('Nosso número deve ter até 11 dígitos'));
   t.true(error.message.includes('12 dígitos'));
 });
 
-test('Deve aceitar nosso número com 11 dígitos exatos', t => {
+test('Deve aceitar nosso número com 11 dígitos exatos', (t) => {
   const beneficiario = boleto.getBeneficiario();
   beneficiario.comCarteira('06');
   beneficiario.comNossoNumero('12345678901');
-  
+
   const codigoBarras = banco.geraCodigoDeBarrasPara(boleto);
   t.truthy(codigoBarras);
 });
-
