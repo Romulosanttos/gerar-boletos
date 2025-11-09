@@ -20,7 +20,8 @@
     "gerar:Cecred": "node ./examples/gerar-boleto-cecred.js",
     "gerar:Brasil": "node ./examples/gerar-boleto-BancoDoBrasil.js",
     "gerar:Sicredi": "node ./examples/gerar-boleto-sicredi.js",
-    "gerar:all": "npm run gerar:Bradesco && npm run gerar:Cecred && npm run gerar:Brasil && npm run gerar:Sicredi"
+    "gerar:all": "npm run gerar:Bradesco && npm run gerar:Cecred && npm run gerar:Brasil && npm run gerar:Sicredi",
+    "prepare": "husky"
   },
   "keywords": [
     "gerador",
@@ -61,7 +62,19 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.3.3"
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "ava": {
     "files": [
