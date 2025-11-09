@@ -1,0 +1,176 @@
+name: Release and Versioning
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write  # Required for NPM Trusted Publishers (OIDC)
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Ensure npm 11.5.1 or later
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump
+        id: version
+        run: |
+          # Obter última mensagem de commit
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          # Determinar tipo de versão baseado na mensagem do commit
+          if echo "$COMMIT_MSG" | grep -qiE "^(breaking|major):"; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+            echo "Versão MAJOR detectada"
+          elif echo "$COMMIT_MSG" | grep -qiE "^(feat|feature|minor):"; then
+            echo "bump=minor" >> $GITHUB_OUTPUT
+            echo "Versão MINOR detectada"
+          elif echo "$COMMIT_MSG" | grep -qiE "^(fix|patch|chore|docs|style|refactor|perf|test):"; then
+            echo "bump=patch" >> $GITHUB_OUTPUT
+            echo "Versão PATCH detectada"
+          else
+            echo "bump=patch" >> $GITHUB_OUTPUT
+            echo "Versão PATCH padrão"
+          fi
+
+      - name: Bump version
+        id: bump
+        run: |
+          # Obter versão atual
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Versão atual: $CURRENT_VERSION"
+          
+          # Incrementar versão
+          npm version ${{ steps.version.outputs.bump }} --no-git-tag-version
+          
+          # Obter nova versão
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "Nova versão: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+          # Commitar mudança de versão
+          git add package.json
+          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+          git tag "v$NEW_VERSION"
+
+      - name: Push changes
+        run: |
+          git push origin ${{ github.ref_name }}
+          git push origin --tags
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Obter tags
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          CURRENT_TAG="v${{ steps.bump.outputs.version }}"
+          
+          # Gerar changelog
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" $CURRENT_TAG)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..$CURRENT_TAG)
+          fi
+          
+          # Salvar changelog
+          echo "$CHANGELOG" > CHANGELOG.txt
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.bump.outputs.version }}
+          release_name: Release v${{ steps.bump.outputs.version }}
+          body: |
+            ## Changelog
+            
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ## Instalação
+            
+            ```bash
+            npm install gerar-boletos@${{ steps.bump.outputs.version }}
+            ```
+          draft: false
+          prerelease: false
+
+      - name: Publish to NPM (optional)
+        if: false  # Altere para true quando quiser publicar no NPM
+        run: npm publish
+        # Não precisa de NODE_AUTH_TOKEN - usa OIDC automaticamente
+
+  test-after-release:
+    name: Test After Release
+    needs: release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Versão verificada: $VERSION"
+
+      - name: Run smoke tests
+        run: npm test
