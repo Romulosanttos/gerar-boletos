@@ -142,8 +142,8 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Publish to NPM (optional)
-        if: false  # Altere para true quando quiser publicar no NPM
+      - name: Publish to NPM
+        if: true  # Publicação ativada com Trusted Publishers
         run: npm publish
         # Não precisa de NODE_AUTH_TOKEN - usa OIDC automaticamente
 
