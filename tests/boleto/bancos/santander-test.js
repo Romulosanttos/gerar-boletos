@@ -200,6 +200,22 @@ test('Deve gerar código de barras válido com Santander', t => {
   t.true(codigoString.length > 0);
 });
 
+test('Deve gerar código de barras com código beneficiário menor (fix do bug)', t => {
+  const beneficiario = boleto.getBeneficiario();
+  // BUG FIX: Agora aceita código com menos de 7 dígitos (será formatado com padding)
+  beneficiario.comCodigoBeneficiario('123'); // 3 dígitos - será formatado para 0000123
+  beneficiario.comNossoNumero('123456789012');
+  beneficiario.comDigitoNossoNumero('4');
+  beneficiario.comCarteira('101');
+
+  const codigoDeBarras = santander.geraCodigoDeBarrasPara(boleto);
+  t.truthy(codigoDeBarras);
+  
+  // Deve gerar código válido mesmo com código beneficiário curto
+  const codigoString = codigoDeBarras.toString();
+  t.true(codigoString.length > 0);
+});
+
 // ===== TESTES DE EDGE CASES =====
 
 test('Deve formatar código do beneficiário com valor vazio', t => {
