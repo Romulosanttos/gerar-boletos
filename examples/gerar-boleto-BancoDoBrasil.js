@@ -1,7 +1,7 @@
 const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
 
 const boleto = {
-  banco: new Bancos.BancoBrasil(),
+  banco: new Bancos.BancoDoBrasil(),
   pagador: {
     nome: 'José Bonifácio de Andrada',
     registroNacional: '12345678',

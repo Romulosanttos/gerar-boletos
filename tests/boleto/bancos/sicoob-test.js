@@ -1,12 +1,11 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
-const fs = require('fs'),
-  boletos = require('../../../lib/core/boleto.js'),
-  Sicoob = require('../../../lib/banks/sicoob.js'),
-  Datas = boletos.Datas,
-  Endereco = boletos.Endereco,
-  Beneficiario = boletos.Beneficiario,
-  Pagador = boletos.Pagador,
-  Boleto = boletos.Boleto;
+const fs = require('fs');
+const Boleto = require('../../../lib/core/boleto');
+const Sicoob = require('../../../lib/banks/sicoob');
+const Datas = require('../../../lib/core/datas');
+const Endereco = require('../../../lib/core/endereco');
+const Beneficiario = require('../../../lib/core/beneficiario');
+const Pagador = require('../../../lib/core/pagador');
 
 let banco, boleto, beneficiario;
 

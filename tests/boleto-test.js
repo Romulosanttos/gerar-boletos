@@ -1,14 +1,14 @@
-const boleto = require('../lib/core/boleto');
-const bancos = boleto.bancos;
-const Endereco = boleto.Endereco;
-const Gerador = boleto.Gerador;
-const Boleto = boleto.Boleto;
-const Datas = boleto.Datas;
+const Boleto = require('../lib/core/boleto');
+const Datas = require('../lib/core/datas');
+const Endereco = require('../lib/core/endereco');
+const bancos = require('../lib/banks');
+const Gerador = require('../lib/generators/boleto-generator');
+const especiesDeDocumento = require('../lib/core/especiesDocumento');
 
 module.exports = {
   especiesDeDocumento: {
     'Verifica que contém o número correto de espécies': function (test) {
-      test.equals(Object.keys(boleto.especiesDeDocumento).length, 21);
+      test.equals(Object.keys(especiesDeDocumento).length, 21);
       test.done();
     },
   },

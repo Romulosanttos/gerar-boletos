@@ -1,13 +1,12 @@
 const PdfGerador = require('../../../lib/generators/pdf-generator');
-const fs = require('fs'),
-  boletos = require('../../../lib/core/boleto.js'),
-  Bradesco = require('../../../lib/banks/bradesco.js'),
-  geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter.js'),
-  Datas = boletos.Datas,
-  Endereco = boletos.Endereco,
-  Beneficiario = boletos.Beneficiario,
-  Pagador = boletos.Pagador,
-  Boleto = boletos.Boleto;
+const fs = require('fs');
+const Boleto = require('../../../lib/core/boleto');
+const Bradesco = require('../../../lib/banks/bradesco');
+const geradorDeLinhaDigitavel = require('../../../lib/generators/line-formatter');
+const Datas = require('../../../lib/core/datas');
+const Endereco = require('../../../lib/core/endereco');
+const Beneficiario = require('../../../lib/core/beneficiario');
+const Pagador = require('../../../lib/core/pagador');
 
 let banco, boleto;
 
