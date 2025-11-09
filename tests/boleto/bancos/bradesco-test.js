@@ -132,12 +132,10 @@ module.exports = {
   },
 
   'Verifica criação de pdf': function (test) {
-    new PdfGerador(boleto)
-      .pdfFile('../tests/banks/boleto-bradesco.pdf')
-      .then(async ({ path }) => {
-        test.ok(fs.existsSync(path));
-        test.equal(fs.unlinkSync(path), undefined);
-        test.done();
-      });
+    new PdfGerador(boleto).pdfFile('../tests/banks/boleto-bradesco.pdf').then(async ({ path }) => {
+      test.ok(fs.existsSync(path));
+      test.equal(fs.unlinkSync(path), undefined);
+      test.done();
+    });
   },
 };
