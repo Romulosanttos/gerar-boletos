@@ -67,14 +67,8 @@
     "prettier": "^3.3.3"
   },
   "lint-staged": {
-    "*.{js,json,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+    "*.{js,json,md}": "prettier --write",
+    "*.js": "eslint --fix"
   },
   "ava": {
     "files": [
