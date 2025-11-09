@@ -1,0 +1,50 @@
+{
+  "name": "Protect master branch",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/master"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "required_status_checks": [
+          {
+            "context": "Lint Code",
+            "integration_id": 15368
+          },
+          {
+            "context": "Run Tests (16)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Run Tests (18)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Run Tests (20)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Code Coverage",
+            "integration_id": 15368
+          }
+        ],
+        "strict_required_status_checks_policy": true
+      }
+    }
+  ],
+  "bypass_actors": []
+}
