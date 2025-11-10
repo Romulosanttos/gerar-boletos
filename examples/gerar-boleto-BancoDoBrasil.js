@@ -1,4 +1,8 @@
-const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
+const { Bancos, Boletos } = require('../lib/index');
+
+// String PIX EMV de exemplo (substitua pela string real retornada pelo banco)
+const pixEmvExemplo =
+  '00020126580014br.gov.bcb.pix0136a629532e-7693-4846-852d-1bbff6b2f8cd520400005303986540510.005802BR5913EMPRESA LTDA6014BELO HORIZONTE62070503***6304AD38';
 
 const boleto = {
   banco: new Bancos.BancoDoBrasil(),
@@ -18,13 +22,14 @@ const boleto = {
     nome: 'Empresa Fictícia LTDA',
     cnpj: '43576788000191',
     dadosBancarios: {
-      carteira: '09',
-      agencia: '18455',
+      carteira: '17',
+      convenio: '1234567', // Convênio de 7 dígitos
+      agencia: '1845',
       agenciaDigito: '4',
-      conta: '1277165',
-      contaDigito: '1',
-      nossoNumero: '00000000061',
-      nossoNumeroDigito: '8',
+      conta: '12771',
+      contaDigito: '6',
+      nossoNumero: '12345678901234567', // 17 dígitos para convênio de 7 dígitos
+      nossoNumeroDigito: '5',
     },
     endereco: {
       logradouro: 'Rua Pedro Lessa, 15',
@@ -39,9 +44,13 @@ const boleto = {
     especieDocumento: 'DM',
     valor: 110.0,
     datas: {
-      vencimento: '02-04-2020',
-      processamento: '02-04-2019',
-      documentos: '02-04-2019',
+      vencimento: '02-04-2026',
+      processamento: '02-04-2025',
+      documentos: '02-04-2025',
+    },
+    pixEmv: {
+      emv: pixEmvExemplo,
+      instrucoes: ['Pague via PIX usando o QR Code.'],
     },
   },
 };
@@ -49,37 +58,22 @@ const boleto = {
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-// Exemplo com tratamento de erro melhorado (PR #39)
-console.log('🏛️ Gerando boleto Banco do Brasil...');
-
-// Demonstrando diferentes formas de uso
-async function gerarBoleto() {
+async function gerarBoletos() {
   try {
-    // Usando pdfFile com async/await
-    const { stream } = await novoBoleto.pdfFile('./tmp/boletos', 'boleto-bb');
+    const nomeBanco = 'banco-do-brasil';
 
-    console.log('✅ PDF do Banco do Brasil gerado com sucesso!');
-    console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bb.pdf');
+    console.log('🏛️  Gerando boleto Banco do Brasil com PIX...');
 
-    await StreamToPromise(stream);
+    // Gerar PDF
+    const { filePath: pdfPath } = await novoBoleto.pdfFile('./tmp/boletos', nomeBanco);
+    console.log(`✅ PDF gerado: ${pdfPath}`);
+
+    // Gerar PNG
+    const pngPaths = await novoBoleto.pngFile('./tmp/boletos', nomeBanco, { scale: 2.0 });
+    console.log(`🖼️  PNG gerado: ${pngPaths.join(', ')}`);
   } catch (error) {
-    console.error('❌ Erro ao gerar boleto Banco do Brasil:', error.message);
-
-    switch (error.code) {
-      case 'ENOENT':
-        console.error('📂 Diretório não encontrado. Verifique o caminho especificado.');
-        break;
-      case 'EACCES':
-        console.error('🔒 Sem permissão para escrever no diretório.');
-        break;
-      default:
-        console.error('🔧 Erro desconhecido. Verifique os dados do boleto.');
-        if (error.stack) {
-          console.error('📋 Stack trace:', error.stack.split('\n')[0]);
-        }
-    }
+    console.error('❌ Erro ao gerar boleto:', error.message);
   }
 }
 
-// Executar a função
-gerarBoleto();
+gerarBoletos();

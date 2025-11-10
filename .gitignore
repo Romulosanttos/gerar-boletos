@@ -130,4 +130,3 @@ lib-cov
 *.out
 *.pid
 coverage
-tmp/boletos/*.pdf

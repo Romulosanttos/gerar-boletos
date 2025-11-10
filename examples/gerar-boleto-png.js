@@ -1,5 +1,9 @@
 const { Bancos, Boletos } = require('../lib/index');
 
+// String PIX EMV de exemplo (substitua pela string real retornada pelo banco)
+const pixEmvExemplo =
+  '00020126580014br.gov.bcb.pix0136a629532e-7693-4846-852d-1bbff6b2f8cd520400005303986540510.005802BR5913EMPRESA LTDA6014BELO HORIZONTE62070503***6304AD38';
+
 const boleto = {
   banco: new Bancos.Bradesco(),
   pagador: {
@@ -43,21 +47,38 @@ const boleto = {
       processamento: '04/02/2020',
       documentos: '04/02/2020',
     },
+    pixEmv: {
+      emv: pixEmvExemplo,
+      instrucoes: ['Pague via PIX usando o QR Code.'],
+    },
   },
 };
 
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-console.log('🖼️  Gerando boleto em PNG...');
+async function gerarBoletos() {
+  try {
+    const nomeBanco = 'bradesco';
 
-// Gerar PNG direto em arquivo
-novoBoleto
-  .pngFile('./tmp/boletos', 'boleto', { scale: 2.0 })
-  .then((filePaths) => {
+    console.log('🖼️  Gerando boleto em PNG com PIX...');
+
+    // Gerar apenas PNG (sem PDF)
+    const pngPaths = await novoBoleto.pngFile('./tmp/boletos', nomeBanco, { scale: 2.0 });
+
     console.log('✅ Boleto PNG gerado com sucesso!');
-    filePaths.forEach((path) => console.log(`📁 ${path}`));
-  })
-  .catch((error) => {
+    pngPaths.forEach((path) => console.log(`📁 ${path}`));
+
+    // Exemplo: Gerar PNG em memória (sem salvar em arquivo)
+    console.log('\n💾 Gerando PNG em memória...');
+    const images = await novoBoleto.pngBuffer({ scale: 3.0 });
+    console.log(`✅ ${images.length} página(s) gerada(s) em buffer`);
+    images.forEach(({ page, buffer }) => {
+      console.log(`   Página ${page}: ${(buffer.length / 1024).toFixed(2)} KB`);
+    });
+  } catch (error) {
     console.error('❌ Erro ao gerar boleto:', error.message);
-  });
+  }
+}
+
+gerarBoletos();

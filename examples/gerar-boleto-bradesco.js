@@ -1,4 +1,8 @@
-const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
+const { Bancos, Boletos } = require('../lib/index');
+
+// String PIX EMV de exemplo (substitua pela string real retornada pelo banco)
+const pixEmvExemplo =
+  '00020126580014br.gov.bcb.pix0136a629532e-7693-4846-852d-1bbff6b2f8cd520400005303986540510.005802BR5913EMPRESA LTDA6014BELO HORIZONTE62070503***6304AD38';
 
 const boleto = {
   banco: new Bancos.Bradesco(),
@@ -43,30 +47,32 @@ const boleto = {
       processamento: '04/02/2020',
       documentos: '04/02/2020',
     },
+    pixEmv: {
+      emv: pixEmvExemplo,
+      instrucoes: ['Pague via PIX usando o QR Code.'],
+    },
   },
 };
 
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-console.log('🏦 Gerando boleto Bradesco...');
+async function gerarBoletos() {
+  try {
+    const nomeBanco = 'bradesco';
 
-novoBoleto
-  .pdfFile('./tmp/boletos', 'boleto-bradesco')
-  .then(async ({ stream }) => {
-    console.log('✅ PDF do Bradesco gerado com sucesso!');
-    console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-bradesco.pdf');
+    console.log('🏦 Gerando boleto Bradesco com PIX...');
 
-    await StreamToPromise(stream);
-  })
-  .catch((error) => {
-    console.error('❌ Erro ao gerar boleto Bradesco:', error.message);
+    // Gerar PDF
+    const { filePath: pdfPath } = await novoBoleto.pdfFile('./tmp/boletos', nomeBanco);
+    console.log(`✅ PDF gerado: ${pdfPath}`);
 
-    if (error.code === 'ENOENT') {
-      console.error('📂 Erro: Diretório não encontrado. Criando automaticamente...');
-    } else if (error.code === 'EACCES') {
-      console.error('🔒 Erro: Sem permissão para escrever no diretório');
-    }
+    // Gerar PNG
+    const pngPaths = await novoBoleto.pngFile('./tmp/boletos', nomeBanco, { scale: 2.0 });
+    console.log(`🖼️  PNG gerado: ${pngPaths.join(', ')}`);
+  } catch (error) {
+    console.error('❌ Erro ao gerar boleto:', error.message);
+  }
+}
 
-    console.error('🔧 Sugestão: Verifique os dados bancários e permissões do sistema');
-  });
+gerarBoletos();

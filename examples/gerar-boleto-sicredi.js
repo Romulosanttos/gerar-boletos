@@ -1,4 +1,8 @@
-const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
+const { Bancos, Boletos } = require('../lib/index');
+
+// String PIX EMV de exemplo (substitua pela string real retornada pelo banco)
+const pixEmvExemplo =
+  '00020126580014br.gov.bcb.pix0136a629532e-7693-4846-852d-1bbff6b2f8cd520400005303986540510.005802BR5913EMPRESA LTDA6014BELO HORIZONTE62070503***6304AD38';
 
 // Exemplo de boleto Sicredi demonstrando as correções do PR #38
 const boleto = {
@@ -28,7 +32,6 @@ const boleto = {
       conta: '45678', // Código do beneficiário
       nossoNumero: '12345678', // 8 dígitos
       nossoNumeroDigito: '9',
-      // Não definimos codposto propositalmente para demonstrar a correção do PR #38
     },
     endereco: {
       logradouro: 'Av. Cooperativismo, 123',
@@ -47,55 +50,36 @@ const boleto = {
       processamento: '11/01/2025',
       documentos: '11/01/2025',
     },
+    pixEmv: {
+      emv: pixEmvExemplo,
+      instrucoes: ['Pague via PIX usando o QR Code.'],
+    },
   },
 };
 
 const novoBoleto = new Boletos(boleto);
 novoBoleto.gerarBoleto();
 
-console.log('🌱 Gerando boleto Sicredi...');
+async function gerarBoletos() {
+  try {
+    const nomeBanco = 'sicredi';
 
-// Exemplo usando pdfFile com tratamento de erro melhorado (PR #39)
-novoBoleto
-  .pdfFile('./tmp/boletos', 'boleto-sicredi')
-  .then(async ({ stream }) => {
-    console.log('✅ PDF do Sicredi gerado com sucesso!');
-    console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-sicredi.pdf');
+    console.log('🌱 Gerando boleto Sicredi com PIX...');
 
-    await StreamToPromise(stream);
-  })
-  .catch((error) => {
-    console.error('❌ Erro ao gerar boleto Sicredi:', error.message);
+    // Gerar PDF
+    const { filePath: pdfPath } = await novoBoleto.pdfFile('./tmp/boletos', nomeBanco);
+    console.log(`✅ PDF gerado: ${pdfPath}`);
+
+    // Gerar PNG
+    const pngPaths = await novoBoleto.pngFile('./tmp/boletos', nomeBanco, { scale: 2.0 });
+    console.log(`🖼️  PNG gerado: ${pngPaths.join(', ')}`);
+  } catch (error) {
+    console.error('❌ Erro ao gerar boleto:', error.message);
 
     if (error.message.includes('44')) {
       console.error('🔧 Erro no código de barras. Verifique os dados do beneficiário.');
-    } else if (error.message.includes('getCodposto')) {
-      console.error('🔧 Erro relacionado ao código do posto. (Já corrigido no PR #38)');
     }
+  }
+}
 
-    console.error('📋 Para o Sicredi, certifique-se de que:');
-    console.error('   - Carteira tem 1 dígito');
-    console.error('   - Nosso número tem 8 dígitos');
-    console.error('   - Código do beneficiário está correto');
-  });
-
-console.log('\n📄 Exemplo alternativo usando pdfStream:');
-
-const fs = require('fs');
-const streamOutput = fs.createWriteStream('./tmp/boletos/sicredi-stream.pdf');
-
-novoBoleto
-  .pdfStream(streamOutput)
-  .then(async ({ stream }) => {
-    console.log('✅ PDF via stream gerado com sucesso!');
-    console.log('📁 Arquivo: ./tmp/boletos/sicredi-stream.pdf');
-
-    await StreamToPromise(stream);
-  })
-  .catch((error) => {
-    console.error('❌ Erro no pdfStream:', error.message);
-
-    if (error.code) {
-      console.error('🔧 Código do erro:', error.code);
-    }
-  });
+gerarBoletos();
