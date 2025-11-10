@@ -16,31 +16,13 @@
       "type": "non_fast_forward"
     },
     {
-      "type": "required_status_checks",
+      "type": "pull_request",
       "parameters": {
-        "required_status_checks": [
-          {
-            "context": "Lint Code",
-            "integration_id": 15368
-          },
-          {
-            "context": "Run Tests (16)",
-            "integration_id": 15368
-          },
-          {
-            "context": "Run Tests (18)",
-            "integration_id": 15368
-          },
-          {
-            "context": "Run Tests (20)",
-            "integration_id": 15368
-          },
-          {
-            "context": "Code Coverage",
-            "integration_id": 15368
-          }
-        ],
-        "strict_required_status_checks_policy": false
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false
       }
     }
   ],
