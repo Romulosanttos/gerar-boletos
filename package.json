@@ -54,7 +54,8 @@
   "dependencies": {
     "base64-stream": "^1.0.0",
     "date-fns": "^4.1.0",
-    "pdfkit": "^0.15.0"
+    "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "ava": "^6.4.1",
