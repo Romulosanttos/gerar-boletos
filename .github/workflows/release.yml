@@ -72,27 +72,39 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          # Obter versão atual
+          # Obter versão atual do package.json
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Versão atual: $CURRENT_VERSION"
           
-          # Incrementar versão
-          npm version ${{ steps.version.outputs.bump }} --no-git-tag-version
+          # Calcular nova versão baseado no tipo de bump
+          BUMP_TYPE="${{ steps.version.outputs.bump }}"
           
-          # Obter nova versão
-          NEW_VERSION=$(node -p "require('./package.json').version")
+          # Separar versão em MAJOR.MINOR.PATCH
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          
+          # Incrementar versão conforme o tipo
+          if [ "$BUMP_TYPE" = "major" ]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [ "$BUMP_TYPE" = "minor" ]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+          
+          # Montar nova versão
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Nova versão: $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           
-          # Commitar mudança de versão
-          git add package.json
-          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
-          git tag "v$NEW_VERSION"
+          # Criar tag localmente (sem commit no package.json)
+          git tag "v$NEW_VERSION" -m "Release v$NEW_VERSION"
 
-      - name: Push changes
+      - name: Push tag
         run: |
-          git push origin ${{ github.ref_name }}
-          git push origin --tags
+          git push origin "v${{ steps.bump.outputs.version }}"
 
       - name: Generate changelog
         id: changelog
@@ -132,6 +144,11 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update package.json version for NPM publish
+        run: |
+          # Atualizar package.json temporariamente para publicar a versão correta
+          npm version ${{ steps.bump.outputs.version }} --no-git-tag-version --allow-same-version
 
       - name: Publish to NPM
         if: true  # Publicação ativada com Trusted Publishers
