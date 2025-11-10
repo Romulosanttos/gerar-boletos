@@ -160,7 +160,8 @@ test('pdfFile() deve criar diretório se não existir', async (t) => {
 
   t.true(fs.existsSync(testDir));
   t.truthy(result.boleto);
-  t.truthy(result.stream);
+  t.truthy(result.filePath);
+  t.is(result.filePath, path.join(testDir, 'test-boleto.pdf'));
 
   // Limpar
   const filePath = path.join(testDir, 'test-boleto.pdf');
@@ -190,7 +191,8 @@ test('pdfFile() deve gerar PDF no caminho especificado', async (t) => {
 
   t.truthy(result);
   t.truthy(result.boleto);
-  t.truthy(result.stream);
+  t.truthy(result.filePath);
+  t.is(result.filePath, filePath);
   t.true(fs.existsSync(filePath));
 
   const stats = fs.statSync(filePath);
@@ -211,6 +213,7 @@ test('pdfFile() deve usar defaults quando não especificado', async (t) => {
   const result = await boleto.pdfFile(); // Sem parâmetros
 
   t.truthy(result);
+  t.truthy(result.filePath);
   t.true(fs.existsSync(filePath));
 
   // Limpar
@@ -236,7 +239,6 @@ test('pdfStream() deve gerar PDF em stream customizado', async (t) => {
 
   t.truthy(result);
   t.truthy(result.boleto);
-  t.is(result.stream, stream);
   t.true(fs.existsSync(filePath));
 
   // Limpar
