@@ -1,4 +1,4 @@
-const { Bancos, Boletos, StreamToPromise } = require('../lib/index');
+const { Bancos, Boletos } = require('../lib/index');
 
 /**
  * Exemplo de geração de boleto com QR Code PIX
@@ -75,12 +75,10 @@ console.log('🏦 Gerando boleto com QR Code PIX...');
 
 novoBoleto
   .pdfFile('./tmp/boletos', 'boleto-com-pix')
-  .then(async ({ stream }) => {
+  .then(({ filePath }) => {
     console.log('✅ Boleto com QR Code PIX gerado com sucesso!');
-    console.log('📁 Arquivo salvo em: ./tmp/boletos/boleto-com-pix.pdf');
+    console.log(`📁 Arquivo salvo em: ${filePath}`);
     console.log('\n💡 NOTA: Esta é uma demonstração. Use um código PIX EMV real em produção.');
-
-    await StreamToPromise(stream);
   })
   .catch((error) => {
     console.error('❌ Erro ao gerar boleto:', error.message);
