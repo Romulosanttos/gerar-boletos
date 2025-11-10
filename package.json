@@ -20,7 +20,6 @@
     "gerar:Cecred": "node ./examples/gerar-boleto-cecred.js",
     "gerar:Brasil": "node ./examples/gerar-boleto-BancoDoBrasil.js",
     "gerar:Sicredi": "node ./examples/gerar-boleto-sicredi.js",
-    "gerar:all": "npm run gerar:Bradesco && npm run gerar:Cecred && npm run gerar:Brasil && npm run gerar:Sicredi",
     "prepare": "husky"
   },
   "keywords": [
@@ -55,6 +54,7 @@
     "base64-stream": "^1.0.0",
     "date-fns": "^4.1.0",
     "pdfkit": "^0.15.0",
+    "pdf-to-img": "^5.0.0",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
