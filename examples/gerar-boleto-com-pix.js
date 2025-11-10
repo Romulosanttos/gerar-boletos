@@ -63,7 +63,7 @@ const boleto = {
     // Objeto PIX com código EMV e instruções
     pixEmv: {
       emv: pixEmvExemplo,
-      instrucoes: ['Pague via PIX usando o QR Code ao lado', 'Instantâneo, seguro e sem taxas'],
+      instrucoes: ['Pague via PIX usando o QR Code abaixo.'],
     },
   },
 };
