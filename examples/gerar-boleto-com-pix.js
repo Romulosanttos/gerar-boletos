@@ -30,11 +30,7 @@ const boleto = {
       cep: '20030-030',
     },
   },
-  instrucoes: [
-    'Após o vencimento Mora dia R$ 1,59',
-    'Após o vencimento, multa de 2%',
-    'Pague via PIX usando o QR Code ao lado',
-  ],
+  instrucoes: ['Após o vencimento Mora dia R$ 1,59', 'Após o vencimento, multa de 2%'],
   beneficiario: {
     nome: 'Empresa Fictícia LTDA',
     cnpj: '43576788000191',
@@ -64,8 +60,11 @@ const boleto = {
       processamento: '04/02/2020',
       documentos: '04/02/2020',
     },
-    // Código PIX EMV retornado pelo banco após registro
-    pixEmv: pixEmvExemplo,
+    // Objeto PIX com código EMV e instruções
+    pixEmv: {
+      emv: pixEmvExemplo,
+      instrucoes: ['Pague via PIX usando o QR Code ao lado', 'Instantâneo, seguro e sem taxas'],
+    },
   },
 };
 
