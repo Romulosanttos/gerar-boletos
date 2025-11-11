@@ -1,6 +1,6 @@
 {
   "name": "gerar-boletos",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "Gerar boletos para vários bancos",
   "main": "lib/index.js",
   "directories": {
@@ -39,7 +39,18 @@
     "economica",
     "federal",
     "santander",
-    "sicoob"
+    "sicoob",
+    "pdf",
+    "png",
+    "pix",
+    "qrcode",
+    "boleto bancario",
+    "boleto pdf",
+    "boleto png",
+    "gerar boleto",
+    "gerar boletos",
+    "generate boleto",
+    "generate boletos"
   ],
   "author": {
     "name": "Rômulo Cabral Santos",
