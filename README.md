@@ -319,8 +319,8 @@ Este projeto está licenciado sob [GNU AGPL-3.0](LICENSE) - veja o arquivo LICEN
 
 ## 📊 Status do Projeto
 
-- ✅ 184 testes automatizados
-- ✅ 88% de cobertura de código
+- ✅ 336 testes automatizados
+- ✅ 91.9% de cobertura de código
 - ✅ 8 bancos suportados
 - ✅ Geração de PDF e PNG
 - ✅ QR Code PIX integrado
