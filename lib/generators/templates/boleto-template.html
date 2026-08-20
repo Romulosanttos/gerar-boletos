@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleto</title>
+    <style>
+        .pagina {
+            width: 210mm;
+            font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
+            font-size: 8pt;
+            font-weight: bold;
+            margin: 5mm auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1pt black solid;
+            padding-left: 2pt;
+            padding-right: 2pt;
+            font-weight: normal;
+        }
+
+        td.center {
+            text-align: center;
+            vertical-align: super;
+        }
+
+        td.left {
+            text-align: left;
+            vertical-align: super;
+        }
+
+        td.right {
+            text-align: right;
+            vertical-align: super;
+        }
+
+        p {
+            font-weight: bold;
+            text-align: left;
+            white-space: nowrap;
+            margin-top: 2pt;
+        }
+
+        td.sem-borda {
+            border: none;
+        }
+
+        td.borda-left {
+            border: none;
+            border-right: 1pt solid;
+            vertical-align: bottom;
+        }
+
+        td.cabecalho {
+            padding: 0 2mm 0 2mm;
+            font-weight: bolder;
+            font-size: 10pt;
+            vertical-align: bottom;
+        }
+
+        td.logo {
+            font-size: 8pt;
+        }
+
+        hr {
+            border-top: 1pt dashed
+        }
+
+        p.lb-autenticacao {
+            text-align: right;
+            margin-right: 5mm;
+        }
+
+        .codigo-barras {
+            width: 116mm;
+            height: 60px;
+        }
+
+        .qrcode-pix {
+            width: 100px;
+            height: 100px;
+        }
+
+        .pix-copia-cola {
+            border: 1pt solid black;
+            padding: 5pt;
+            margin-top: 5pt;
+            font-size: 6pt;
+            word-wrap: break-word;
+        }
+
+        @media print {
+            .noprint {
+                display: none;
+            }
+
+            .pagina {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {{BOLETOS}}
+</body>
+
+</html>
